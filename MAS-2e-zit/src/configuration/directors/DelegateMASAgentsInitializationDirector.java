@@ -1,5 +1,6 @@
 package configuration.directors;
 
+import configuration.DelayedTimePattern;
 import layer.physical.entities.Crossroads;
 import layer.physical.entities.Road;
 import layer.physical.entities.Truck;

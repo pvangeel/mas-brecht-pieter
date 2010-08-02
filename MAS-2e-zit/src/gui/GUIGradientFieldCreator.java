@@ -1,6 +1,7 @@
 package gui;
 
 import layer.physical.events.GradientFieldCreatedEvent;
+import layer.physical.events.GradientFieldDestroyedEvent;
 import framework.events.Event;
 import framework.gui.GUI;
 import framework.gui.GUIObject;

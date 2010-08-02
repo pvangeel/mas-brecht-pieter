@@ -1,5 +1,7 @@
 package gui;
 
+import layer.physical.events.PackageCreatedEvent;
+import layer.physical.events.PackagePickedEvent;
 import framework.events.Event;
 import framework.gui.GUI;
 import framework.gui.GUIObject;
