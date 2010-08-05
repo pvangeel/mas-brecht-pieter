@@ -18,6 +18,8 @@ import framework.layer.physical.command.move.EnterConnectorCommand;
 public class PickAndDeliverPackage extends Command<Truck> {
 
 	private PDPPackageDTO p;
+	
+	//TODO: ROUTERING MOET DMV VAN ANTS EN NIET DOOR EXTERNE ROUTER
 	private AStarRouter router;
 	private Agent commandingAgent;
 
