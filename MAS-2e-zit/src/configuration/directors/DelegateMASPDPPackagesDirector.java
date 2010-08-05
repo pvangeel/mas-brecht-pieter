@@ -35,7 +35,7 @@ public class DelegateMASPDPPackagesDirector extends InitializationDirector<Physi
 	}
 
 	/**
-	 * Create just one vehicle and deploy the vehicle on the CROSSROAD, at position (x,y)
+	 * Create just one package and deploy the package on the CROSSROAD, at position (x,y)
 	 */
 	@Override
 	protected void createAndDeploy() {
