@@ -3,6 +3,8 @@ package layer.devices;
 import java.util.LinkedList;
 import java.util.List;
 
+import ants.LoopException;
+
 import layer.physical.entities.Crossroads;
 
 
@@ -32,5 +34,16 @@ public class Trajectory {
 		}
 		
 		return ret;
+	}
+	
+	public void addCrossroads(Crossroads crossroads) throws LoopException {
+		if(this.crossroads.contains(crossroads))
+			throw new LoopException();
+		this.crossroads.addLast(crossroads);
+		
+	}
+	
+	public Crossroads getLast() {
+		return this.crossroads.getLast();
 	}
 }

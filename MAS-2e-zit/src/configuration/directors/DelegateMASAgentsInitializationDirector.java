@@ -1,6 +1,7 @@
 package configuration.directors;
 
 import configuration.DelayedTimePattern;
+import configuration.intructions.CreateDelegateMASDeliveryAgent;
 import layer.physical.entities.Crossroads;
 import layer.physical.entities.Road;
 import layer.physical.entities.Truck;
@@ -32,10 +33,10 @@ public class DelegateMASAgentsInitializationDirector extends InitializationDirec
 		
 		long currentTime = VirtualClock.currentTime();
 		
-		instructionManager.addInstruction(new CreateGradientFieldDeliveryAgent(currentTime, 1909090909));
+		instructionManager.addInstruction(new CreateDelegateMASDeliveryAgent(currentTime, 1909090909));
 		instructionManager.addInstruction(new DeployAgentInstruction(currentTime, 1909090909, 1));
 		
-		instructionManager.addInstruction(new CreateGradientFieldDeliveryAgent(currentTime, 1909090908));
+		instructionManager.addInstruction(new CreateDelegateMASDeliveryAgent(currentTime, 1909090908));
 		instructionManager.addInstruction(new DeployAgentInstruction(currentTime, 1909090908, 2));
 
 	}

@@ -1,5 +1,6 @@
 package layer.physical.entities;
 
+import layer.devices.Trajectory;
 import layer.physical.events.TruckCreatedEvent;
 import environment.Environment;
 import framework.events.EventBroker;
@@ -58,5 +59,10 @@ public class Truck extends Vehicle<Truck, Crossroads, Road>{
 	public void unload() {
 		getConnectorPosition().getConnector().receivePackage(this.pdpPackage);
 		pdpPackage = null;
+	}
+	
+	
+	public boolean hasPackage() {
+		return pdpPackage != null;
 	}
 }

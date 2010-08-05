@@ -28,9 +28,6 @@ public class PDPPackageDTO {
 		return weight;
 	}
 	
-	public long getRadius() {
-		return pdpPackage.getRadius();
-	}
 
 	@Override
 	public int hashCode() {

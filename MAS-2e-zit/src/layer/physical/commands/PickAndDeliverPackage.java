@@ -1,8 +1,8 @@
 package layer.physical.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import layer.devices.AStarRouter;
 import layer.physical.entities.Crossroads;
 import layer.physical.entities.PDPPackageDTO;
 import layer.physical.entities.Road;
@@ -20,14 +20,14 @@ public class PickAndDeliverPackage extends Command<Truck> {
 	private PDPPackageDTO p;
 	
 	//TODO: ROUTERING MOET DMV VAN ANTS EN NIET DOOR EXTERNE ROUTER
-	private AStarRouter router;
+	//private AStarRouter router;
 	private Agent commandingAgent;
 
-	public PickAndDeliverPackage(Truck dv, PDPPackageDTO p, AStarRouter router, Agent commandingAgent) {
+	public PickAndDeliverPackage(Truck dv, PDPPackageDTO p, Agent commandingAgent) {
 		super(dv);
 		
 		this.p = p;
-		this.router = router;
+		//this.router = router;
 		this.commandingAgent = commandingAgent;
 	}
 	
@@ -38,8 +38,11 @@ public class PickAndDeliverPackage extends Command<Truck> {
 		Crossroads destinationToPick = p.getOrigin();
 		Crossroads destinationToDeliver = p.getDestination();
 				
-		List<Crossroads> pathToPick = router.calculateTrajectory(VirtualClock.currentTime(), getEntity().getConnectorPosition().getConnector(), destinationToPick).getTrajectory();
-		List<Crossroads> pathToDeliver = router.calculateTrajectory(VirtualClock.currentTime(), destinationToPick, destinationToDeliver).getTrajectory();
+		//List<Crossroads> pathToPick = router.calculateTrajectory(VirtualClock.currentTime(), getEntity().getConnectorPosition().getConnector(), destinationToPick).getTrajectory();
+		//List<Crossroads> pathToDeliver = router.calculateTrajectory(VirtualClock.currentTime(), destinationToPick, destinationToDeliver).getTrajectory();
+		
+		List<Crossroads> pathToPick = new ArrayList<Crossroads>();
+		List<Crossroads> pathToDeliver = new ArrayList<Crossroads>();
 		
 		Crossroads previous = getEntity().getConnectorPosition().getConnector();
 		for(int i=0; i<pathToPick.size(); i++) {
