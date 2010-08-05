@@ -11,6 +11,7 @@ import framework.core.VirtualClock;
 import framework.initialization.InitializationDirector;
 import framework.initialization.IntervalTimePattern;
 import framework.instructions.deployment.DeployAgentInstruction;
+import framework.instructions.deployment.DeployPDPPackage;
 import framework.layer.physical.PhysicalConnectionStructure;
 import framework.utils.Utils;
 
@@ -55,6 +56,7 @@ public class DelegateMASPDPPackagesDirector extends InitializationDirector<Physi
 			//avoid deploying packages in Crossroads without exit
 			if(cr2.getOutgoingConnections().size() > 0 || cr1.getOutgoingConnections().size() > 0) {
 				getInstructionManager().addInstruction(new CreatePDPPackage(currentTime, lastId + i, cr1, cr2, 10.0));
+//				getInstructionManager().addInstruction(new DeployPDPPackage(currentTime, lastId + i));
 				//getInstructionManager().addInstruction(new DeployAgentInstruction(currentTime, lastId + i, 1));
 			}
 			

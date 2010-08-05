@@ -30,6 +30,7 @@ public class CreatePDPPackage extends CreateInstruction {
 	protected Object createObject() {
 		PDPPackage ret = new PDPPackage(id, origin, destination, weigth);
 		origin.addPackage(ret); //deploys this package in the crossroad that is the package origin
+		
 		return ret;
 	}
 

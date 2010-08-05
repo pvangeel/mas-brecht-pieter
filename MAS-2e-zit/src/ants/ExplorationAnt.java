@@ -24,6 +24,8 @@ public class ExplorationAnt {
 	}
 
 	public void explore(Crossroads from) {
+		
+		System.out.println("exploring shizzle");
 		if(hops > maxHops)
 			return;
 		try {
