@@ -47,16 +47,16 @@ public class DelegateMASPDPBuilder extends ExperimentBuilder<PhysicalConnectionS
 //		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> agents = new GradientAgentsInitializationDirector();
 //		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> packages = new GradientPDPPackagesDirector();
 		
-		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> vehicles = new DelegateMASVehiclesInitializationDirector();
-		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> agents = new DelegateMASAgentsInitializationDirector();
-		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> packages = new DelegateMASPDPPackagesDirector();
+//		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> vehicles = new DelegateMASVehiclesInitializationDirector();
+//		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> agents = new DelegateMASAgentsInitializationDirector();
+//		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> packages = new DelegateMASPDPPackagesDirector();
 		
 		
 		
 		initializers.add(roadInfrastructure);
-		initializers.add(vehicles);
-		initializers.add(agents);
-		initializers.add(packages);
+//		initializers.add(vehicles);
+//		initializers.add(agents);
+//		initializers.add(packages);
 		
 		return initializers;
 	}
@@ -80,6 +80,7 @@ public class DelegateMASPDPBuilder extends ExperimentBuilder<PhysicalConnectionS
 	@Override
 	public long getSimulationTime() {
 		int simulationTimeInMinutes = 60 * 24 * 50; // 5 days
+		//TODO: marcheert dit wel?
 		return Utils.minutesToMicroSeconds(simulationTimeInMinutes);
 	}
 
