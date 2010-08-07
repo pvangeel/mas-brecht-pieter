@@ -17,6 +17,7 @@ public class DeployPDPPackage extends Instruction<PhysicalStructure<?>> {
 	private final int packageId;
 
 	public DeployPDPPackage(long executionTime, int packageId) {
+		super(executionTime);
 		executionTime2 = executionTime;
 		this.packageId = packageId;
 		
@@ -25,8 +26,8 @@ public class DeployPDPPackage extends Instruction<PhysicalStructure<?>> {
 	@Override
 	public void execute() {
 		// TODO Auto-generated method stub
-		PhysicalEntity PDPPackage = getInstructionManager().findSpecificObject(PhysicalEntity.class, packageId);
-		getInstructionManager().getAgentStructure().getAgentLayer().getRegistry().register(PDPPackage);
+		PDPPackage pDPPackage = getInstructionManager().findSpecificObject(PDPPackage.class, packageId);
+		getInstructionManager().getPhysicalStructure().addResource(pDPPackage);
 	}
 
 }

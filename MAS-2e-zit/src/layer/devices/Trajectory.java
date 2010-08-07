@@ -10,7 +10,7 @@ import layer.physical.entities.Crossroads;
 
 public class Trajectory {
 
-	private LinkedList<Crossroads> crossroads;
+	private LinkedList<Crossroads> crossroads = new LinkedList<Crossroads>();
 
 	public void load(List<Crossroads> result) {
 		this.crossroads = new LinkedList<Crossroads>(result);

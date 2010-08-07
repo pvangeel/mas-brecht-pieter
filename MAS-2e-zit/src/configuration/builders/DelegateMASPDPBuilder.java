@@ -9,6 +9,7 @@ import configuration.directors.DelegateMASAgentsInitializationDirector;
 import configuration.directors.DelegateMASPDPPackagesDirector;
 import configuration.directors.DelegateMASVehiclesInitializationDirector;
 import configuration.directors.OSMDirector;
+import configuration.directors.RegularGridDirector;
 
 import layer.physical.entities.Crossroads;
 import layer.physical.entities.Road;
@@ -22,11 +23,22 @@ import framework.utils.Utils;
 public class DelegateMASPDPBuilder extends ExperimentBuilder<PhysicalConnectionStructure<Truck, Crossroads, Road>>{
 
 	private File osmMapFile;
+	private int width;
+	private int height;
+	
+	private boolean regularGrid = false;
 
 	public DelegateMASPDPBuilder(File osmMapFile) {
 		if(osmMapFile == null)
 			throw new IllegalArgumentException("Should be a file.");
 		this.osmMapFile = osmMapFile;
+	}
+	
+	public DelegateMASPDPBuilder(int width, int height) {
+		this.width = width;
+		this.height = height;
+		width = height;
+		regularGrid = true;
 	}
 	
 	@Override
@@ -41,8 +53,13 @@ public class DelegateMASPDPBuilder extends ExperimentBuilder<PhysicalConnectionS
 		
 		
 		//TODO: Regular grid ipv map?
-		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> roadInfrastructure = new OSMDirector(osmMapFile);
 		
+		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> roadInfrastructure;
+		if(regularGrid) {
+			roadInfrastructure = new RegularGridDirector(width, height);
+		} else {
+			roadInfrastructure = new OSMDirector(osmMapFile);
+		}
 //		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> vehicles = new GradientVehiclesInitializationDirector();
 //		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> agents = new GradientAgentsInitializationDirector();
 //		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> packages = new GradientPDPPackagesDirector();
@@ -54,9 +71,9 @@ public class DelegateMASPDPBuilder extends ExperimentBuilder<PhysicalConnectionS
 		
 		
 		initializers.add(roadInfrastructure);
-		initializers.add(vehicles);
-		initializers.add(agents);
-		initializers.add(packages);
+//		initializers.add(vehicles);
+//		initializers.add(agents);
+//		initializers.add(packages);
 		
 		return initializers;
 	}

@@ -1,9 +1,11 @@
 package ants;
 
+import java.util.LinkedList;
 import java.util.Set;
 
 import framework.layer.agent.Agent;
 
+import layer.agent.entities.DelegateMASDeliveryAgent;
 import layer.devices.Trajectory;
 import layer.physical.entities.Crossroads;
 import layer.physical.entities.PDPPackage;
@@ -24,6 +26,20 @@ public class ExplorationAnt {
 	}
 
 	public void explore(Crossroads from) {
+		
+		LinkedList<Truck> trucksOnCrossroads = from.getOnroadEntities();
+		trucksOnCrossroads.addAll(from.getOffroadEntities());
+		
+		if(trucksOnCrossroads.size() >0) {
+			for (Truck truck : trucksOnCrossroads) {
+				Set<Agent> agents = truck.getAgentsOnAttachDevices();
+				//System.out.println("aantal agents voor truck on cross:" + agents.size() );
+				DelegateMASDeliveryAgent vehicleAgent = (DelegateMASDeliveryAgent) agents.iterator().next();
+				
+				vehicleAgent.giveRoute(route);
+				
+			}
+		}
 		
 		System.out.println("exploring shizzle");
 		if(hops > maxHops)
@@ -46,7 +62,7 @@ public class ExplorationAnt {
 				for (Truck truck : trucksOnRoad) {
 					//truck.announcePackage(pdpPackage, route);
 					Set<Agent> agents = truck.getAgentsOnAttachDevices();
-					System.out.println("aantal agents voor truck:" + agents.size() );
+					//System.out.println("aantal agents voor truck:" + agents.size() );
 					
 				}
 			}

@@ -22,6 +22,7 @@ public abstract class CreateInstruction extends Instruction<PhysicalStructure<?>
 	@Override
 	public void execute() {
 		Object object = createObject();
+		System.out.println("creating: " + object + " with id: " +objectId );
 		getInstructionManager().addCreatedObject(objectId, object);
 	}
 

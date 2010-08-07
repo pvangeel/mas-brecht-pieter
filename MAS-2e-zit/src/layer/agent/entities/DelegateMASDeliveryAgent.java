@@ -1,5 +1,6 @@
 package layer.agent.entities;
 
+import java.util.Collections;
 import java.util.List;
 
 import layer.devices.Trajectory;
@@ -49,8 +50,8 @@ public class DelegateMASDeliveryAgent extends Agent {
 
 	@Override
 	public void processTick(long timePassed) {
-//		if(myTruck == null)
-//			myTruck = (Truck) getDevice().getPhysicalEntity();
+		if(myTruck == null)
+			myTruck = (Truck) getDevice().getPhysicalEntity();
 //
 //
 //		// perceive block
@@ -134,6 +135,40 @@ public class DelegateMASDeliveryAgent extends Agent {
 //			}
 //		}
 //	}
+		boolean perceiveOnConnector = myTruck.isOnConnector();
+		boolean perceiveOnConnection = myTruck.isOnConnection();
 
+		if(path != null && path.size() > 0) {
+			if(perceiveOnConnector) {
+				Crossroads cr = path.remove(0);
+				System.out.println("cr:"+cr);
+				if(!myTruck.getConnectorPosition().getConnector().equals(cr)){
+					myTruck.addCommand(new LeaveCrossroadCommand(myTruck, myTruck.getConnectorPosition().getConnector().getConnectionTo(cr)), this);
+					lastTime = VirtualClock.currentTime();
+				}
+				lastLocation = cr;
+			}
+			else {
+				if(perceiveOnConnection){
+					if (myTruck.getConnectionPosition().getConnection().isAtEnd(myTruck)) {
+						myTruck.addCommand(new EnterConnectorCommand<Truck, Crossroads, Road>(myTruck, true), this);
+					} else {
+						myTruck.addCommand(new MoveForwardCommand(myTruck), this);
+					}
+				}	
+			}
+		}
+		
+		
+	}
+
+	public void giveRoute(Trajectory route) {
+		List<Crossroads> trajectory = route.getTrajectory();
+		
+		Collections.reverse(trajectory);
+		trajectory.remove(0);
+		
+		this.path = trajectory;
+		
 	}
 }

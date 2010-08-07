@@ -115,6 +115,8 @@ public class PDPPackage extends Resource<PDPPackage> {
 			lastAntsSent = VirtualClock.currentTime();
 		}
 		
+//		System.out.println("tick");
+		
 	}
 	
 	private void sendExplorationAnts() {
