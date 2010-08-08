@@ -23,6 +23,10 @@ public class RegularGridDirector
 
 	private int width;
 	private int height;
+	
+	private long startX = 6695747603L;
+	private long startY = 4003837795L;
+	private long interval = 600000L;
 
 	public RegularGridDirector(
 			TimePattern timePattern,
@@ -86,8 +90,8 @@ public class RegularGridDirector
 						new DeployConnectorInstruction<Truck, Crossroads, Road>(
 								currentTime, 
 								nextId, 
-								x*10, 
-								y*10
+								startX + x * interval, 
+								startY + y * interval
 						)
 				);
 

@@ -71,9 +71,9 @@ public class DelegateMASPDPBuilder extends ExperimentBuilder<PhysicalConnectionS
 		
 		
 		initializers.add(roadInfrastructure);
-//		initializers.add(vehicles);
-//		initializers.add(agents);
-//		initializers.add(packages);
+		initializers.add(vehicles);
+		initializers.add(agents);
+		initializers.add(packages);
 		
 		return initializers;
 	}

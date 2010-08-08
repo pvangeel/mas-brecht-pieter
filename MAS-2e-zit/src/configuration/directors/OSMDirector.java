@@ -131,7 +131,7 @@ public class OSMDirector extends InitializationDirector<PhysicalConnectionStruct
 		if(osmNode.getPosition().getX() == 6694731329l && osmNode.getPosition().getY() == 4003729508l) {
 			System.out.println("----->>>" + osmNode.getId());
 		}
-//		System.out.println(osmNode.getPosition().getX() + "   " + osmNode.getPosition().getY());
+		System.out.println(osmNode.getPosition().getX() + "   " + osmNode.getPosition().getY());
 		
 	}
 	

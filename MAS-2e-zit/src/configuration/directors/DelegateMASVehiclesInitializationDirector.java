@@ -35,8 +35,8 @@ public class DelegateMASVehiclesInitializationDirector extends InitializationDir
 	protected void createAndDeploy() {
 		long currentTime = VirtualClock.currentTime();
 		
-		Crossroads cr1 = getInstructionManager().findSpecificObject(Crossroads.class, 16483780); //node from leuven 16401060, 16401062
-		Crossroads cr2 = getInstructionManager().findSpecificObject(Crossroads.class, 16483813);
+		Crossroads cr1 = getInstructionManager().findSpecificObject(Crossroads.class, 0); //node from leuven 16401060, 16401062
+//		Crossroads cr2 = getInstructionManager().findSpecificObject(Crossroads.class, 2);
 		
 //		System.out.println("x=" + cr1.getPosition().getX() + "   y=" + cr1.getPosition().getY());
 //		System.out.println("x=" + cr2.getPosition().getX() + "   y=" + cr2.getPosition().getY());
@@ -56,12 +56,12 @@ public class DelegateMASVehiclesInitializationDirector extends InitializationDir
 		
 		
 		
-		getInstructionManager().addInstruction(new CreateTruck(currentTime, 2, Utils.fromKmHToMmMicroSec(1)));
-		getInstructionManager().addInstruction(new DeployConnectionEntityInstruction<Truck, Crossroads, Road>(currentTime, 2, cr2.getPosition().getX(),cr2.getPosition().getY(), true));
-		getInstructionManager().addInstruction(new CreateCommunicationCapabilityInstruction(currentTime, 2, null));
-		getInstructionManager().addInstruction(new CreateStorageCapabilityInstruction(currentTime, 2, 100000));
-		getInstructionManager().addInstruction(new CreateDeviceInstruction(currentTime, 2, 2, 2));
-		getInstructionManager().addInstruction(new DeployDeviceInstruction(currentTime, 2, 2));
+//		getInstructionManager().addInstruction(new CreateTruck(currentTime, 2, Utils.fromKmHToMmMicroSec(1)));
+//		getInstructionManager().addInstruction(new DeployConnectionEntityInstruction<Truck, Crossroads, Road>(currentTime, 2, cr2.getPosition().getX(),cr2.getPosition().getY(), true));
+//		getInstructionManager().addInstruction(new CreateCommunicationCapabilityInstruction(currentTime, 2, null));
+//		getInstructionManager().addInstruction(new CreateStorageCapabilityInstruction(currentTime, 2, 100000));
+//		getInstructionManager().addInstruction(new CreateDeviceInstruction(currentTime, 2, 2, 2));
+//		getInstructionManager().addInstruction(new DeployDeviceInstruction(currentTime, 2, 2));
 //		
 //		
 //		getInstructionManager().addInstruction(new CreateTruck(currentTime, 3, Utils.fromKmHToMmMicroSec(5)));
