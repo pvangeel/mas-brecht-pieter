@@ -16,7 +16,7 @@ public class ExplorationAnt {
 
 	private Trajectory route = new Trajectory();
 	private final PDPPackage pdpPackage;
-	long hops = 0;
+	private long hops = 0;
 	private final long maxHops;
 	
 	
