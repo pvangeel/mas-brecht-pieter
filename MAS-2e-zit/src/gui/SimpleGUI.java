@@ -6,6 +6,7 @@ import java.awt.Graphics;
 //import pclabs4.gui.GUIPackageCreator;
 //import pclabs4.gui.GUIPackagePickedCreator;
 import framework.gui.GUI;
+import framework.gui.ZoomPanningGUIPlugin;
 import framework.layer.physical.position.ContinuousPosition;
 import gui.creators.GUICommunicationCapabilityCreator;
 import gui.creators.GUICommunicationLinkCreator;
@@ -26,6 +27,8 @@ public class SimpleGUI extends GUI {
 		// beginPosition.getY()));
 		setUpperLeft(new ContinuousPosition(6694635603L, 4002725795L));
 //		setUpperLeft(new ContinuousPosition(0L, 0L));
+		
+		addPlugin(new ZoomPanningGUIPlugin());
 	}
 
 	@Override

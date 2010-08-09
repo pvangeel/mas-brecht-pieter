@@ -41,7 +41,7 @@ public class ExplorationAnt {
 			}
 		}
 		
-		System.out.println("exploring shizzle");
+//		System.out.println("exploring shizzle");
 		if(hops > maxHops)
 			return;
 		try {

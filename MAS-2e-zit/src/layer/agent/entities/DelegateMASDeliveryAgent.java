@@ -137,13 +137,16 @@ public class DelegateMASDeliveryAgent extends Agent {
 //	}
 		boolean perceiveOnConnector = myTruck.isOnConnector();
 		boolean perceiveOnConnection = myTruck.isOnConnection();
-
+		boolean allCommandsProcessed = myTruck.allCommandsProcessed();
+		if(allCommandsProcessed) {
 		if(path != null && path.size() > 0) {
 			if(perceiveOnConnector) {
 				Crossroads cr = path.remove(0);
-				System.out.println("cr:"+cr);
+				System.out.println("cr:"+cr.getId());
 				if(!myTruck.getConnectorPosition().getConnector().equals(cr)){
-					myTruck.addCommand(new LeaveCrossroadCommand(myTruck, myTruck.getConnectorPosition().getConnector().getConnectionTo(cr)), this);
+					Road road = myTruck.getConnectorPosition().getConnector().getConnectionTo(cr);
+					System.out.println("road = " + road.getConnector1().getId() + " to " + road.getConnector2().getId());
+					myTruck.addCommand(new LeaveCrossroadCommand(myTruck, road), this);
 					lastTime = VirtualClock.currentTime();
 				}
 				lastLocation = cr;
@@ -158,17 +161,26 @@ public class DelegateMASDeliveryAgent extends Agent {
 				}	
 			}
 		}
-		
+		}
 		
 	}
 
 	public void giveRoute(Trajectory route) {
+		if(this.path != null) {
+			System.out.println("new path not accepted");
+			return;
+		}
 		List<Crossroads> trajectory = route.getTrajectory();
 		
 		Collections.reverse(trajectory);
-		trajectory.remove(0);
 		
 		this.path = trajectory;
+		
+		System.out.println("printing path");
+		for (Crossroads crossroads : path) {
+			System.out.println("crossrds id: " + crossroads.getId());
+		}
+		System.out.println("end printing path");
 		
 	}
 }
