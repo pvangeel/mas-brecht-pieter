@@ -35,7 +35,7 @@ public class DelegateMASPDPPackagesDirector extends InitializationDirector<Physi
 
 	private static final int PACKAGES_PER_HOUR = 1;
 	private static final long PACKAGE_GENERATOR_SEED = 1290299;
-	private static final int TOTAL_NUMBER_OF_PACKAGES = 15;
+	private static final int TOTAL_NUMBER_OF_PACKAGES = 1;
 	private Random random;
 	private int lastId = 0;
 	

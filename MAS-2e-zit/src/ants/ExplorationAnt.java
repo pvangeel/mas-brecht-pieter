@@ -14,67 +14,67 @@ import layer.physical.entities.Truck;
 
 public class ExplorationAnt {
 
-	private Trajectory route = new Trajectory();
+	private Trajectory route;
 	private final PDPPackage pdpPackage;
-	private long hops = 0;
-	private final long maxHops;
-	
-	
-	public ExplorationAnt(PDPPackage pdpPackage, long maxHops) {
+	private long hopsToDo;
+
+
+	public ExplorationAnt(PDPPackage pdpPackage, long hopsToDo) {
 		this.pdpPackage = pdpPackage;
-		this.maxHops = maxHops;
+		this.hopsToDo = hopsToDo;
+		this.route = new Trajectory(pdpPackage);
+	}
+	
+	private ExplorationAnt(PDPPackage pdpPackage, long hopsToDo, Trajectory route) {
+		this(pdpPackage, hopsToDo);
+		this.route = new Trajectory(route, pdpPackage);
+	}
+	
+	private DelegateMASDeliveryAgent extractAgent(Set<Agent> agents){
+		DelegateMASDeliveryAgent vehicleAgent = (DelegateMASDeliveryAgent) agents.iterator().next();
+		return vehicleAgent;
 	}
 
 	public void explore(Crossroads from) {
-		
+
 		LinkedList<Truck> trucksOnCrossroads = from.getOnroadEntities();
 		trucksOnCrossroads.addAll(from.getOffroadEntities());
-		
-		if(trucksOnCrossroads.size() >0) {
+
+		if(trucksOnCrossroads.size() > 0) {
 			for (Truck truck : trucksOnCrossroads) {
-				Set<Agent> agents = truck.getAgentsOnAttachDevices();
-				//System.out.println("aantal agents voor truck on cross:" + agents.size() );
-				DelegateMASDeliveryAgent vehicleAgent = (DelegateMASDeliveryAgent) agents.iterator().next();
-				
-				vehicleAgent.giveRoute(route);
-				
+				DelegateMASDeliveryAgent vehicleAgent = extractAgent(truck.getAgentsOnAttachDevices());
+				vehicleAgent.suggestRoute(route);
 			}
 		}
-		
-//		System.out.println("exploring shizzle");
-		if(hops > maxHops)
+
+		if(hopsToDo == 0)
 			return;
 		try {
 			route.addCrossroads(from);
-			hops++;
 		} catch (LoopException e) {
 			return;
 		}
-		
+
 		Set<Road> outgoingConnections = from.getOutgoingConnections();
-		
+
 		for (Road road : outgoingConnections) {
 			Set<Truck> trucksOnRoad = getTrucksOnRoad(road);
-			if(trucksOnRoad.isEmpty()) {
-				Crossroads otherConnector = road.getOtherConnector(from);
-				explore(otherConnector);
-			} else {
-				for (Truck truck : trucksOnRoad) {
-					//truck.announcePackage(pdpPackage, route);
-					Set<Agent> agents = truck.getAgentsOnAttachDevices();
-					//System.out.println("aantal agents voor truck:" + agents.size() );
-					
-				}
+			Crossroads otherConnector = road.getOtherConnector(from);
+
+			for (Truck truck : trucksOnRoad) {
+				DelegateMASDeliveryAgent vehicleAgent = extractAgent(truck.getAgentsOnAttachDevices());
+				vehicleAgent.suggestRoute(route);
 			}
-			
+
+			new ExplorationAnt(pdpPackage, --hopsToDo, route).explore(otherConnector);
 		}
-		
+
 	}
 
 	private Set<Truck> getTrucksOnRoad(Road road) {
 		Set<Truck> trucks = road.getEntitiesTo1();
 		trucks.addAll(road.getEntitiesTo2());
-		
+
 		return trucks;
 	}
 

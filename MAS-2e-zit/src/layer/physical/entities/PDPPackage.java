@@ -4,6 +4,8 @@ import java.util.Set;
 
 import ants.ExplorationAnt;
 
+import layer.agent.entities.DelegateMASDeliveryAgent;
+import layer.devices.Trajectory;
 import layer.physical.events.GradientFieldCreatedEvent;
 import layer.physical.events.GradientFieldDestroyedEvent;
 import framework.core.SimulationCore;
@@ -66,7 +68,7 @@ public class PDPPackage extends Resource<PDPPackage> {
 	private boolean packageDelivered = false;
 	private boolean action1 = false;
 	private boolean action0 = false;
-	private long delta = Utils.secondsToMicroSeconds(900);
+	
 //	private long tLastGFIncrease = 0;
 //	private long lastRadius = Utils.metersToMillimeter(10);
 //	private int INCREASE_RADIUS_BY = 50;
@@ -110,28 +112,66 @@ public class PDPPackage extends Resource<PDPPackage> {
 //			}
 //		}
 		
-		if(lastAntsSent + delta < VirtualClock.currentTime()) {   
-			sendExplorationAnts();
-			lastAntsSent = VirtualClock.currentTime();
-		}
+		confirmTruck();
+		sendExplorationAnts();
 		
 //		System.out.println("tick");
-		
 	}
 	
+	
+	private void confirmTruck() {
+		currentTruck.confirmTruck(this);
+	}
+	
+	private DelegateMASDeliveryAgent currentTruck;
+	private Trajectory currentRouteToThis;
+
 	private void sendExplorationAnts() {
-		
-			ExplorationAnt ant = new ExplorationAnt(this, 20);
+		if(lastAntsSent + delta < VirtualClock.currentTime()) {   
+			ExplorationAnt ant = new ExplorationAnt(this, currentHops++);
 			ant.explore(origin);
+			lastAntsSent = VirtualClock.currentTime();
+		}
+	}
+	
+	public boolean reserve(DelegateMASDeliveryAgent truckAgent, Trajectory route){
+		if(currentTruck == null){
+			currentTruck = truckAgent;
+			currentRouteToThis = route;
+			return true;
+		}else{
+			if(better(route)){
+				currentTruck = truckAgent;
+				currentRouteToThis = route;
+				return true;
+			}else
+				return false;
+		}
+	}
+	
+	
+	
+	private boolean better(Trajectory newRoute) {
+		Trajectory routeFromCurrentTruck = currentTruck.getCurrentRoute();
+		/*
+		 * Als de truck die onderweg is naar dit pakje ondertussen een beter pakje heeft gevonden maar nog steeds
+		 * in deze package geregistreerd staat als currentTruck (confirmTruck is nog niet gebeurd, gebeurt bij volgende tick)
+		 */
+		if(routeFromCurrentTruck != currentRouteToThis)
+			return true;
 		
-		
-		
-		// TODO Auto-generated method stub
-		
+		return newRoute.isBetter(currentRouteToThis);
 	}
 
-	private long packagePriority=1;
-	private long lastAntsSent=VirtualClock.currentTime();
+	public long getPackagePriority(){
+		return packagePriority;
+	}
+
+	private long packagePriority = 1;
+	private long lastAntsSent = VirtualClock.currentTime();
+	private long delta = Utils.secondsToMicroSeconds(900);
+	//TODO: evt aanpassen als package gereserveerd is
+	private long currentHops = 1;
 	
 
 	@Override
