@@ -35,8 +35,15 @@ public class DelegateMASVehiclesInitializationDirector extends InitializationDir
 	protected void createAndDeploy() {
 		long currentTime = VirtualClock.currentTime();
 		
-		Crossroads cr1 = getInstructionManager().findSpecificObject(Crossroads.class, 0); //node from leuven 16401060, 16401062
+		/*
+		 * Onderstaande lijntjes halen de crossroads op waar de vehicles worden gedeployed
+		 */
+		
+		Crossroads cr1 = getInstructionManager().findSpecificObject(Crossroads.class, 0);
 //		Crossroads cr2 = getInstructionManager().findSpecificObject(Crossroads.class, 2);
+
+//		Crossroads cr1 = getInstructionManager().findSpecificObject(Crossroads.class, 16483780);
+//		Crossroads cr2 = getInstructionManager().findSpecificObject(Crossroads.class, 16483813);
 		
 //		System.out.println("x=" + cr1.getPosition().getX() + "   y=" + cr1.getPosition().getY());
 //		System.out.println("x=" + cr2.getPosition().getX() + "   y=" + cr2.getPosition().getY());
