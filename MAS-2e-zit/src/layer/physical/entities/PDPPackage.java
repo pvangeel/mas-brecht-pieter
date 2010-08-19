@@ -120,7 +120,12 @@ public class PDPPackage extends Resource<PDPPackage> {
 	
 	
 	private void confirmTruck() {
-		currentTruck.confirmTruck(this);
+		if(currentTruck != null){
+			if(!currentTruck.confirmTruck(this)){
+				currentTruck = null;
+			}
+			
+		}
 	}
 	
 	private DelegateMASDeliveryAgent currentTruck;
