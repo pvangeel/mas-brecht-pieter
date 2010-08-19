@@ -174,7 +174,11 @@ public class DelegateMASDeliveryAgent extends Agent {
 	}
 
 	private boolean hasBetterRoute() {
-		return suggestedRoutes.first().isBetter(currentTrajectory);
+		if(suggestedRoutes.size() != 0){
+			if(currentTrajectory == null) return true;
+			return suggestedRoutes.first().isBetter(currentTrajectory);
+		}
+		return false;
 	}
 
 	private void drive() {
@@ -185,8 +189,10 @@ public class DelegateMASDeliveryAgent extends Agent {
 		if(!allCommandsProcessed)
 			return;
 		//TODO: als trucks elkaar niet kunnen inhalen, moeten trucks random blijven rijden
-		if(currentTrajectory == null || currentTrajectory.size() == 0)
+		if(currentTrajectory == null || currentTrajectory.size() == 0){
+			currentTrajectory = null;
 			return;
+		}
 
 		if(perceiveOnConnector) {
 			Crossroads cr = currentTrajectory.getAndRemoveFirst();
@@ -213,6 +219,7 @@ public class DelegateMASDeliveryAgent extends Agent {
 	private Trajectory currentTrajectory;
 
 	public boolean confirmTruck(PDPPackage pdpPackage){
+		if(currentTrajectory == null) return false;
 		if(pdpPackage == currentTrajectory.getPdpPackage()){
 			restoreEvaporation();
 			return true;
@@ -226,5 +233,10 @@ public class DelegateMASDeliveryAgent extends Agent {
 
 	public void suggestRoute(Trajectory route) {
 		suggestedRoutes.add(route);
+	}
+
+	public Trajectory getCurrentRoute() {
+		return currentTrajectory;
+		//TODO: check verschillende tijdslijnen
 	}
 }
