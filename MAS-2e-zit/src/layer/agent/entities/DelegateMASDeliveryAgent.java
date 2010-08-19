@@ -137,19 +137,44 @@ public class DelegateMASDeliveryAgent extends Agent {
 	}
 
 	private void checkForBetterRoute() {
-		Trajectory temp = null;
-		if(currentTrajectory == null){
-			if(suggestedRoutes.size() != 0) temp = suggestedRoutes.first();
-			boolean reserved = temp.getPdpPackage().reserve(this, temp);
-			//while van maken
+		boolean hasBetter = hasBetterRoute();
+		if(currentTrajectory == null || hasBetter){
+			boolean reserved = tryToReserveBest();
+			if(reserved){
+				restoreEvaporation();
+			}
 		}
 		
-		//TODO: HIER VERDER DOEN!
-		
-		
-		
-		
+		decreaseEvaporation();
 		suggestedRoutes.clear();
+	}
+
+	private boolean tryToReserveBest() {
+		if(currentTrajectory != null){
+			//remove trajectories that are worse
+			while(currentTrajectory.isBetter(suggestedRoutes.last())){
+				suggestedRoutes.pollLast();
+			}
+		}
+		while(!suggestedRoutes.isEmpty()){
+			if(suggestedRoutes.first().getPdpPackage().reserve(this, suggestedRoutes.first())){
+				currentTrajectory = suggestedRoutes.first();
+				return true;
+			}
+			suggestedRoutes.pollFirst();
+		}
+		return false;
+	}
+
+	private void decreaseEvaporation() {
+		evaporation--;
+		if(evaporation == 0){
+			currentTrajectory = null;
+		}
+	}
+
+	private boolean hasBetterRoute() {
+		return suggestedRoutes.first().isBetter(currentTrajectory);
 	}
 
 	private void drive() {
@@ -182,35 +207,24 @@ public class DelegateMASDeliveryAgent extends Agent {
 		}
 	}
 
-	private PDPPackage reservation;
+	private static final long evaporationMAX = 4000;
+	private long evaporation = evaporationMAX;
 	private TreeSet<Trajectory> suggestedRoutes = new TreeSet<Trajectory>();
 	private Trajectory currentTrajectory;
 
 	public boolean confirmTruck(PDPPackage pdpPackage){
-		if(pdpPackage == reservation){
+		if(pdpPackage == currentTrajectory.getPdpPackage()){
 			restoreEvaporation();
 			return true;
 		}
 		return false;
 	}
 
+	private void restoreEvaporation() {
+		evaporation = evaporationMAX;
+	}
+
 	public void suggestRoute(Trajectory route) {
 		suggestedRoutes.add(route);
-
-		//		if(this.path != null) {
-		//			return;
-		//		}
-		//		List<Crossroads> trajectory = route.getTrajectory();
-		//		
-		//		Collections.reverse(trajectory);
-		//		
-		//		this.path = trajectory;
-
-		//		System.out.println("printing path");
-		//		for (Crossroads crossroads : path) {
-		//			System.out.println("crossrds id: " + crossroads.getId());
-		//		}
-		//		System.out.println("end printing path");
-
 	}
 }
