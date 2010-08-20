@@ -37,7 +37,7 @@ public class DelegateMASPDPPackagesDirector extends InitializationDirector<Physi
 	private static final long PACKAGE_GENERATOR_SEED = 1290299;
 	private static final int TOTAL_NUMBER_OF_PACKAGES = 1;
 	private Random random;
-	private int lastId = 0;
+	private int numberOfPackages = 0;
 	
 	public DelegateMASPDPPackagesDirector() {
 		super(new IntervalTimePattern(Utils.minutesToMicroSeconds(10)));
@@ -50,7 +50,7 @@ public class DelegateMASPDPPackagesDirector extends InitializationDirector<Physi
 	@Override
 	protected void createAndDeploy() {
 		long currentTime = VirtualClock.currentTime();
-		if(lastId > TOTAL_NUMBER_OF_PACKAGES) {
+		if(numberOfPackages >= TOTAL_NUMBER_OF_PACKAGES) {
 			return;
 		}
 		
@@ -59,8 +59,13 @@ public class DelegateMASPDPPackagesDirector extends InitializationDirector<Physi
 			int id1 = nodesExternalIds[(int)Math.ceil(random.nextDouble() * (nodesExternalIds.length - 1))];
 			int id2 = nodesExternalIds[(int)Math.ceil(random.nextDouble() * (nodesExternalIds.length - 1))];
 			
+			id1 = 23;
+			id2 = 3;
+			//TODO: wegdoen
+			
 			Crossroads cr1 = getInstructionManager().findSpecificObject(Crossroads.class, id1);
 			Crossroads cr2 = getInstructionManager().findSpecificObject(Crossroads.class, id2);
+			
 			
 			//avoid deploying packages in Crossroads without exit
 			if(cr2.getOutgoingConnections().size() > 0 || cr1.getOutgoingConnections().size() > 0) {
@@ -69,6 +74,7 @@ public class DelegateMASPDPPackagesDirector extends InitializationDirector<Physi
 //				int deviceId = IdGenerator.getIdGenerator().getNextId(Device.class);
 				getInstructionManager().addInstruction(new CreatePDPPackage(currentTime, packageId, cr1, cr2, 10.0));
 				getInstructionManager().addInstruction(new DeployPDPPackage(currentTime, packageId));
+				System.out.println("Package deployed:" + packageId);
 				//getInstructionManager().addInstruction(new DeployAgentInstruction(currentTime, lastId + i, 1));
 				
 				//getInstructionManager().addInstruction(new DeployConnectionEntityInstruction<Truck, Crossroads, Road>(currentTime, 1, cr1.getPosition().getX(), cr1.getPosition().getY(),  true));
@@ -83,7 +89,7 @@ public class DelegateMASPDPPackagesDirector extends InitializationDirector<Physi
 			
 		}
 		
-		lastId += i; 
+		numberOfPackages += i; 
 	}
 
 	private int[] nodesExternalIds = {0,1,2,3,4,5,6,7,8};

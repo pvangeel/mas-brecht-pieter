@@ -1,8 +1,12 @@
 package layer.agent.entities;
 
+import java.awt.GridLayout;
 import java.util.Collections;
 import java.util.List;
 import java.util.TreeSet;
+
+import javax.swing.JFrame;
+import javax.swing.JTextArea;
 
 import layer.devices.Trajectory;
 import layer.physical.commands.DropPackage;
@@ -32,9 +36,18 @@ import framework.layer.physical.command.move.EnterConnectorCommand;
  */
 public class DelegateMASDeliveryAgent extends Agent {
 	private Truck myTruck;
+	
 
 	public DelegateMASDeliveryAgent() {
-
+		JFrame jFrame = new JFrame();
+		jFrame.setSize(200, 300);
+		jFrame.setLocation(800, 400);
+		jFrame.setLayout(new GridLayout(2, 1));
+		bovensteText = new JTextArea();
+		ondersteText = new JTextArea();
+		jFrame.add(bovensteText);
+		jFrame.add(ondersteText);
+		jFrame.setVisible(true);
 	}
 
 	@Override
@@ -134,6 +147,7 @@ public class DelegateMASDeliveryAgent extends Agent {
 		
 		checkForBetterRoute();
 		drive();
+//		updateVenster();
 	}
 
 	private void checkForBetterRoute() {
@@ -172,11 +186,18 @@ public class DelegateMASDeliveryAgent extends Agent {
 			currentTrajectory = null;
 		}
 	}
+	
+	private void restoreEvaporation() {
+		evaporation = evaporationMAX;
+	}
 
 	private boolean hasBetterRoute() {
 		if(suggestedRoutes.size() != 0){
 			if(currentTrajectory == null) return true;
-			return suggestedRoutes.first().isBetter(currentTrajectory);
+			if(suggestedRoutes.first().isBetter(currentTrajectory))
+				return true;
+			else
+				return false;
 		}
 		return false;
 	}
@@ -189,12 +210,16 @@ public class DelegateMASDeliveryAgent extends Agent {
 		if(!allCommandsProcessed)
 			return;
 		//TODO: als trucks elkaar niet kunnen inhalen, moeten trucks random blijven rijden
-		if(currentTrajectory == null || currentTrajectory.size() == 0){
-			currentTrajectory = null;
+		if(currentTrajectory == null)
 			return;
-		}
-
+			
 		if(perceiveOnConnector) {
+			if(currentTrajectory.size() == 0){
+				//TODO pick up/drop package
+				myTruck.addCommand(new PickPackage(myTruck), this);
+				currentTrajectory = null;
+				return;
+			}
 			Crossroads cr = currentTrajectory.getAndRemoveFirst();
 			if(myTruck.getConnectorPosition().getConnector().equals(cr)) return;
 			
@@ -217,6 +242,8 @@ public class DelegateMASDeliveryAgent extends Agent {
 	private long evaporation = evaporationMAX;
 	private TreeSet<Trajectory> suggestedRoutes = new TreeSet<Trajectory>();
 	private Trajectory currentTrajectory;
+	private JTextArea bovensteText;
+	private JTextArea ondersteText;
 
 	public boolean confirmTruck(PDPPackage pdpPackage){
 		if(currentTrajectory == null) return false;
@@ -227,12 +254,21 @@ public class DelegateMASDeliveryAgent extends Agent {
 		return false;
 	}
 
-	private void restoreEvaporation() {
-		evaporation = evaporationMAX;
-	}
-
 	public void suggestRoute(Trajectory route) {
 		suggestedRoutes.add(route);
+		updateVenster();
+	}
+
+	private void updateVenster() {
+		ondersteText.setText("");
+		for (Trajectory traj : suggestedRoutes) {
+			ondersteText.append(traj.toString() + "\n");
+		}
+		if(currentTrajectory == null){
+			bovensteText.setText("geen route");
+		}else{
+			bovensteText.setText(currentTrajectory.toString());
+		}
 	}
 
 	public Trajectory getCurrentRoute() {

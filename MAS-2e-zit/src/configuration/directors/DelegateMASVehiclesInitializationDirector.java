@@ -39,7 +39,7 @@ public class DelegateMASVehiclesInitializationDirector extends InitializationDir
 		 * Onderstaande lijntjes halen de crossroads op waar de vehicles worden gedeployed
 		 */
 		
-		Crossroads cr1 = getInstructionManager().findSpecificObject(Crossroads.class, 0);
+		Crossroads cr1 = getInstructionManager().findSpecificObject(Crossroads.class, 2);
 //		Crossroads cr2 = getInstructionManager().findSpecificObject(Crossroads.class, 2);
 
 //		Crossroads cr1 = getInstructionManager().findSpecificObject(Crossroads.class, 16483780);

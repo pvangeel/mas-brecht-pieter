@@ -92,7 +92,7 @@ public class Trajectory implements Comparable<Trajectory> {
 	}
 
 	public Crossroads getAndRemoveFirst() {
-		return crossroads.remove(0);
+		return crossroads.remove();
 	}
 
 	
