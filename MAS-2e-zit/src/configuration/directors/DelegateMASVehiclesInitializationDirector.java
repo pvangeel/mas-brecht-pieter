@@ -24,8 +24,13 @@ import framework.utils.Utils;
 @Deprecated
 public class DelegateMASVehiclesInitializationDirector extends InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> {
 
-	public DelegateMASVehiclesInitializationDirector() {
+	private final int numberOfAgents;
+	private final int numberOfCrossroads;
+
+	public DelegateMASVehiclesInitializationDirector(int numberOfAgents, int widthOfGrid) {
 		super(new DelayedTimePattern(1000));
+		this.numberOfAgents = numberOfAgents;
+		this.numberOfCrossroads = widthOfGrid * widthOfGrid;
 	}
 
 	/**
@@ -53,25 +58,16 @@ public class DelegateMASVehiclesInitializationDirector extends InitializationDir
 //		Crossroads cr2 = getInstructionManager().findSpecificObject(Crossroads.class, 2);
 //		Crossroads cr3 = getInstructionManager().findSpecificObject(Crossroads.class, 3);
 		
-		Crossroads cr1 = getInstructionManager().findSpecificObject(Crossroads.class, 0);
-		getInstructionManager().addInstruction(new CreateTruck(currentTime, 1, Utils.fromKmHToMmMicroSec(1)));
-		getInstructionManager().addInstruction(new DeployConnectionEntityInstruction<Truck, Crossroads, Road>(currentTime, 1, cr1.getPosition().getX(), cr1.getPosition().getY(),  true));
-		getInstructionManager().addInstruction(new CreateCommunicationCapabilityInstruction(currentTime, 1, null));
-		getInstructionManager().addInstruction(new CreateStorageCapabilityInstruction(currentTime, 1, 100000));
-		getInstructionManager().addInstruction(new CreateDeviceInstruction(currentTime, 1, 1, 1));
-		getInstructionManager().addInstruction(new DeployDeviceInstruction(currentTime, 1, 1));
-		
-		
-//		int delay = 300;
-//		Crossroads cr2 = getInstructionManager().findSpecificObject(Crossroads.class, 42);
-//		getInstructionManager().addInstruction(new CreateTruck(currentTime + Utils.minutesToMicroSeconds(delay), 2, Utils.fromKmHToMmMicroSec(1)));
-//		getInstructionManager().addInstruction(new DeployConnectionEntityInstruction<Truck, Crossroads, Road>(currentTime + Utils.minutesToMicroSeconds(delay), 2, cr2.getPosition().getX(), cr2.getPosition().getY(),  true));
-//		getInstructionManager().addInstruction(new CreateCommunicationCapabilityInstruction(currentTime + Utils.minutesToMicroSeconds(delay), 2, null));
-//		getInstructionManager().addInstruction(new CreateStorageCapabilityInstruction(currentTime + Utils.minutesToMicroSeconds(delay), 2, 100000));
-//		getInstructionManager().addInstruction(new CreateDeviceInstruction(currentTime + Utils.minutesToMicroSeconds(delay), 2, 2, 2));
-//		getInstructionManager().addInstruction(new DeployDeviceInstruction(currentTime + Utils.minutesToMicroSeconds(delay), 2, 2));
-		
-		
+		for (int i = 0; i < numberOfAgents; i++) {
+			int delay = 0 * i;
+			Crossroads cr = getInstructionManager().findSpecificObject(Crossroads.class, (int) (Math.random() * numberOfCrossroads));
+			getInstructionManager().addInstruction(new CreateTruck(currentTime + Utils.minutesToMicroSeconds(delay), i, Utils.fromKmHToMmMicroSec(1)));
+			getInstructionManager().addInstruction(new DeployConnectionEntityInstruction<Truck, Crossroads, Road>(currentTime + Utils.minutesToMicroSeconds(delay), i, cr.getPosition().getX(), cr.getPosition().getY(),  true));
+			getInstructionManager().addInstruction(new CreateCommunicationCapabilityInstruction(currentTime + Utils.minutesToMicroSeconds(delay), i, null));
+			getInstructionManager().addInstruction(new CreateStorageCapabilityInstruction(currentTime + Utils.minutesToMicroSeconds(delay), i, 100000));
+			getInstructionManager().addInstruction(new CreateDeviceInstruction(currentTime + Utils.minutesToMicroSeconds(delay), i, i, i));
+			getInstructionManager().addInstruction(new DeployDeviceInstruction(currentTime + Utils.minutesToMicroSeconds(delay), i, i));
+		}
 		
 //		getInstructionManager().addInstruction(new CreateTruck(currentTime, 2, Utils.fromKmHToMmMicroSec(1)));
 //		getInstructionManager().addInstruction(new DeployConnectionEntityInstruction<Truck, Crossroads, Road>(currentTime, 2, cr2.getPosition().getX(),cr2.getPosition().getY(), true));

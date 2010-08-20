@@ -24,7 +24,7 @@ public class DelegateMasSimulation {
 		//new Experiment<PhysicalConnectionStructure<Truck, Crossroads, Road>>(4, new GradientFieldPDPBuilder(new File("leuven.osm.xml")));
 		
 //		new Experiment<PhysicalConnectionStructure<Truck, Crossroads, Road>>(1, new DelegateMASPDPBuilder(new File("leuven.osm.xml")));
-		new Experiment<PhysicalConnectionStructure<Truck, Crossroads, Road>>(1, new DelegateMASPDPBuilder(7,7));
+		new Experiment<PhysicalConnectionStructure<Truck, Crossroads, Road>>(1, new DelegateMASPDPBuilder(12,12));
 		
 	}
 
