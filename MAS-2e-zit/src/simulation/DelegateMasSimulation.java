@@ -21,6 +21,7 @@ public class DelegateMasSimulation {
 		int numberOfLinesInGrid = 9;
 		int numberOfAgents = 3;
 		
+		
 		new SimpleGUI(numberOfLinesInGrid);
 //		new MyFirstEventListener(); //creates a simple event listener
 		//new PackagesCreatedEventListener();

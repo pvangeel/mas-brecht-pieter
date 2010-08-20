@@ -47,17 +47,21 @@ public class DelegateMASDeliveryAgent extends Agent {
 	private JTextArea ondersteText;
 	private boolean onRouteToDestination = false;
 	private AStarRouter router = new AStarRouter.DistanceBasedAStar();
+	
+	
+	private boolean withVisuals = true;
 
 	public DelegateMASDeliveryAgent() {
-//		JFrame jFrame = new JFrame();
-//		jFrame.setSize(400, 500);
-//		jFrame.setLocation(850, 400);
-//		jFrame.setLayout(new GridLayout(2, 1));
-//		bovensteText = new JTextArea();
-//		ondersteText = new JTextArea();
-//		jFrame.add(bovensteText);
-//		jFrame.add(ondersteText);
-//		jFrame.setVisible(true);
+		if(!withVisuals) return;
+		JFrame jFrame = new JFrame();
+		jFrame.setSize(400, 500);
+		jFrame.setLocation(850, 400);
+		jFrame.setLayout(new GridLayout(2, 1));
+		bovensteText = new JTextArea();
+		ondersteText = new JTextArea();
+		jFrame.add(bovensteText);
+		jFrame.add(ondersteText);
+		jFrame.setVisible(true);
 	}
 
 	@Override
@@ -67,9 +71,10 @@ public class DelegateMASDeliveryAgent extends Agent {
 
 	@Override
 	public void processTick(long timePassed) {
-		if(myTruck == null)
-			myTruck = (Truck) getDevice().getPhysicalEntity();
+		if(myTruck == null) myTruck = (Truck) getDevice().getPhysicalEntity();
+		
 		checkForBetterRoute();
+		suggestedRoutes.clear();
 		drive();
 		//		updateVenster();
 	}
@@ -84,7 +89,6 @@ public class DelegateMASDeliveryAgent extends Agent {
 		}
 
 		decreaseEvaporation();
-		suggestedRoutes.clear();
 	}
 
 	private boolean hasBetterRoute() {
@@ -134,8 +138,6 @@ public class DelegateMASDeliveryAgent extends Agent {
 		if(perceiveOnConnector) handleCrossroads();
 
 		if(perceiveOnConnection) handleRoad();
-
-		if(perceiveOnConnection && perceiveOnConnector) throw new NullPointerException();
 	}
 
 	private void handleRoad() {
@@ -148,7 +150,16 @@ public class DelegateMASDeliveryAgent extends Agent {
 
 	private void handleCrossroads() {
 		if(pickUpOrDrop()) return;
-
+		
+		//checken of reeds pakje ligt op deze plek waarvan de prioriteit hoger is of gelijk aan huidige route
+		//pakje is al opgepakt en huidige route is naar het volgende pakje
+		if(!myTruck.hasPackage() && myTruck.getConnectorPosition().getConnector().hasPackage()){
+			if(myTruck.getConnectorPosition().getConnector().getPackage().getPackagePriority() >= currentTrajectory.getPdpPackage().getPackagePriority()){
+				currentTrajectory = new Trajectory(myTruck.getConnectorPosition().getConnector().getPackage());
+				pickPackage();
+			}
+		}
+		
 		//Indien de truck op een crossroads staat en net een nieuwe trajectory heeft gekregen is de eerste in de trajectory nog de crossroads waar hij op staat
 		Crossroads cr = currentTrajectory.getAndRemoveFirst();
 		if(myTruck.getConnectorPosition().getConnector().equals(cr)) return;
@@ -170,17 +181,10 @@ public class DelegateMASDeliveryAgent extends Agent {
 	}
 
 	private void dropPackage() {
-		//deze getPDPPackageInfo is soms null!
-		
+		//deze getPDPPackageInfo is soms null! edit:al lang niet meer gebeurd
 		myTruck.addCommand(new DropPackage(myTruck, myTruck.getPDPPackageInfo()), this);
 		onRouteToDestination = false;
-		suggestedRoutes.clear();
 		currentTrajectory = null;
-		
-		if(myTruck.getConnectorPosition().getConnector().hasPackage()             /*crossroad has package*/){
-			currentTrajectory = new Trajectory(myTruck.getConnectorPosition().getConnector().getPackage());
-			pickPackage();
-		}
 	}
 
 	private void pickPackage() {
@@ -201,21 +205,21 @@ public class DelegateMASDeliveryAgent extends Agent {
 	}
 
 	public void suggestRoute(Trajectory route) {
-		if(onRouteToDestination) return;
 		suggestedRoutes.add(route);
 		updateVenster();
 	}
 
 	private void updateVenster() {
-//		ondersteText.setText("");
-//		for (Trajectory traj : suggestedRoutes) {
-//			ondersteText.append(traj.toString() + "\n");
-//		}
-//		if(currentTrajectory == null){
-//			bovensteText.setText("geen route");
-//		}else{
-//			bovensteText.setText(currentTrajectory.toString());
-//		}
+		if(!withVisuals) return;
+		ondersteText.setText("");
+		for (Trajectory traj : suggestedRoutes) {
+			ondersteText.append(traj.toString() + "\n");
+		}
+		if(currentTrajectory == null){
+			bovensteText.setText("geen route");
+		}else{
+			bovensteText.setText(currentTrajectory.toString());
+		}
 	}
 
 	public Trajectory getCurrentRoute() {
