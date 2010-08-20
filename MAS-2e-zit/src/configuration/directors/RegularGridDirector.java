@@ -26,7 +26,7 @@ public class RegularGridDirector
 	
 	private long startX = 6695747603L;
 	private long startY = 4003837795L;
-	private long interval = 600000L;
+	private long interval = 300000L;
 
 	public RegularGridDirector(
 			TimePattern timePattern,

@@ -95,5 +95,9 @@ public class Trajectory implements Comparable<Trajectory> {
 		return crossroads.remove();
 	}
 
+	public Crossroads getSecondLast() {
+		return crossroads.get(crossroads.size() - 2);
+	}
+
 	
 }

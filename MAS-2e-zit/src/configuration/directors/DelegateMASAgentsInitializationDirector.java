@@ -10,6 +10,7 @@ import framework.initialization.InitializationDirector;
 import framework.instructions.InstructionManager;
 import framework.instructions.deployment.DeployAgentInstruction;
 import framework.layer.physical.PhysicalConnectionStructure;
+import framework.utils.Utils;
 
 /**
  * populates the Agent and Deployment Layers with Agents and Devices
@@ -36,8 +37,9 @@ public class DelegateMASAgentsInitializationDirector extends InitializationDirec
 		instructionManager.addInstruction(new CreateDelegateMASDeliveryAgent(currentTime, 1909090909));
 		instructionManager.addInstruction(new DeployAgentInstruction(currentTime, 1909090909, 1));
 		
-//		instructionManager.addInstruction(new CreateDelegateMASDeliveryAgent(currentTime, 1909090908));
-//		instructionManager.addInstruction(new DeployAgentInstruction(currentTime, 1909090908, 2));
+		int delay = 300;
+		instructionManager.addInstruction(new CreateDelegateMASDeliveryAgent(currentTime + Utils.minutesToMicroSeconds(delay), 1909090908));
+		instructionManager.addInstruction(new DeployAgentInstruction(currentTime + Utils.minutesToMicroSeconds(delay), 1909090908, 2));
 
 	}
 

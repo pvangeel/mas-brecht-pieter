@@ -132,14 +132,7 @@ public class PDPPackage extends Resource<PDPPackage> {
 	private DelegateMASDeliveryAgent currentTruck;
 	private Trajectory currentRouteToThis;
 
-	private void sendExplorationAnts() {
-		if(lastAntsSent + delta < VirtualClock.currentTime()) {   
-			ExplorationAnt ant = new ExplorationAnt(this, Math.min(currentHops, maxHOPS));
-			currentHops++;
-			ant.explore(origin);
-			lastAntsSent = VirtualClock.currentTime();
-		}
-	}
+	
 	
 	public boolean reserve(DelegateMASDeliveryAgent truckAgent, Trajectory route){
 		if(currentTruck == null){
@@ -176,10 +169,23 @@ public class PDPPackage extends Resource<PDPPackage> {
 
 	private long packagePriority = 1;
 	private long lastAntsSent = VirtualClock.currentTime();
-	private long delta = Utils.secondsToMicroSeconds(900);
+	private long delta = Utils.secondsToMicroSeconds(400);
 	//TODO: evt aanpassen als package gereserveerd is
 	private int currentHops = 1;
-	private static final int maxHOPS = 6;
+	private static final int maxHOPS = 20;
+	private int nbAnts = 50;
+	
+	private void sendExplorationAnts() {
+		if(lastAntsSent + delta < VirtualClock.currentTime()) {
+			for (int i = 0; i < nbAnts; i++) {
+				ExplorationAnt ant = new ExplorationAnt(this, Math.min(currentHops, maxHOPS));
+				ant.explore(origin);
+				//TODO: dubbels vermijden?
+			}
+			currentHops++;
+			lastAntsSent = VirtualClock.currentTime();
+		}
+	}
 	
 
 	@Override
