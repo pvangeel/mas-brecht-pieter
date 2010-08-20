@@ -8,6 +8,7 @@ import java.util.TreeSet;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
 
+import layer.devices.AStarRouter;
 import layer.devices.Trajectory;
 import layer.physical.commands.DropPackage;
 import layer.physical.commands.LeaveCrossroadCommand;
@@ -151,6 +152,10 @@ public class DelegateMASDeliveryAgent extends Agent {
 	}
 
 	private void checkForBetterRoute() {
+		if(onRouteToDestination){
+			suggestedRoutes.clear();
+			return;
+		}
 		boolean hasBetter = hasBetterRoute();
 		if(currentTrajectory == null || hasBetter){
 			boolean reserved = tryToReserveBest();
@@ -217,9 +222,19 @@ public class DelegateMASDeliveryAgent extends Agent {
 		if(perceiveOnConnector) {
 			if(currentTrajectory.size() == 0){
 				//TODO pick up/drop package
-				myTruck.addCommand(new PickPackage(myTruck), this);
-				currentTrajectory = null;
-				return;
+				
+				if(onRouteToDestination){
+					myTruck.addCommand(new DropPackage(myTruck, myTruck.getPDPPackageInfo()), this);
+					onRouteToDestination = false;
+					currentTrajectory = null;
+					return;
+				}else{
+					myTruck.addCommand(new PickPackage(myTruck), this);
+					restoreEvaporation();
+					onRouteToDestination = true;
+					currentTrajectory = router.calculateTrajectory(currentTrajectory.getPdpPackage(), VirtualClock.currentTime(), currentTrajectory.getPdpPackage().getOrigin(), currentTrajectory.getPdpPackage().getDestination());
+					return;
+				}
 			}
 			Crossroads cr = currentTrajectory.getAndRemoveFirst();
 			if(myTruck.getConnectorPosition().getConnector().equals(cr)) return;
@@ -245,6 +260,8 @@ public class DelegateMASDeliveryAgent extends Agent {
 	private Trajectory currentTrajectory;
 	private JTextArea bovensteText;
 	private JTextArea ondersteText;
+	private boolean onRouteToDestination = false;
+	private AStarRouter router = new AStarRouter.DistanceBasedAStar();
 
 	public boolean confirmTruck(PDPPackage pdpPackage){
 		if(currentTrajectory == null) return false;

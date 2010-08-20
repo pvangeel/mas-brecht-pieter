@@ -34,7 +34,6 @@ public class ExplorationAnt {
 
 	private DelegateMASDeliveryAgent extractAgent(Truck truck){
 		Set<Agent> agents = truck.getAgentsOnAttachDevices();
-		System.out.println("agentssize:" + agents.size());
 		DelegateMASDeliveryAgent vehicleAgent = (DelegateMASDeliveryAgent) agents.iterator().next();
 		return vehicleAgent;
 	}

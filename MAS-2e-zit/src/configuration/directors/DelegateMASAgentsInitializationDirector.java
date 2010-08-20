@@ -37,9 +37,9 @@ public class DelegateMASAgentsInitializationDirector extends InitializationDirec
 		instructionManager.addInstruction(new CreateDelegateMASDeliveryAgent(currentTime, 1909090909));
 		instructionManager.addInstruction(new DeployAgentInstruction(currentTime, 1909090909, 1));
 		
-		int delay = 300;
-		instructionManager.addInstruction(new CreateDelegateMASDeliveryAgent(currentTime + Utils.minutesToMicroSeconds(delay), 1909090908));
-		instructionManager.addInstruction(new DeployAgentInstruction(currentTime + Utils.minutesToMicroSeconds(delay), 1909090908, 2));
+//		int delay = 300;
+//		instructionManager.addInstruction(new CreateDelegateMASDeliveryAgent(currentTime + Utils.minutesToMicroSeconds(delay), 1909090908));
+//		instructionManager.addInstruction(new DeployAgentInstruction(currentTime + Utils.minutesToMicroSeconds(delay), 1909090908, 2));
 
 	}
 

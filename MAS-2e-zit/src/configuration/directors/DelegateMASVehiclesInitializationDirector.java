@@ -62,14 +62,14 @@ public class DelegateMASVehiclesInitializationDirector extends InitializationDir
 		getInstructionManager().addInstruction(new DeployDeviceInstruction(currentTime, 1, 1));
 		
 		
-		int delay = 300;
-		Crossroads cr2 = getInstructionManager().findSpecificObject(Crossroads.class, 42);
-		getInstructionManager().addInstruction(new CreateTruck(currentTime + Utils.minutesToMicroSeconds(delay), 2, Utils.fromKmHToMmMicroSec(1)));
-		getInstructionManager().addInstruction(new DeployConnectionEntityInstruction<Truck, Crossroads, Road>(currentTime + Utils.minutesToMicroSeconds(delay), 2, cr2.getPosition().getX(), cr2.getPosition().getY(),  true));
-		getInstructionManager().addInstruction(new CreateCommunicationCapabilityInstruction(currentTime + Utils.minutesToMicroSeconds(delay), 2, null));
-		getInstructionManager().addInstruction(new CreateStorageCapabilityInstruction(currentTime + Utils.minutesToMicroSeconds(delay), 2, 100000));
-		getInstructionManager().addInstruction(new CreateDeviceInstruction(currentTime + Utils.minutesToMicroSeconds(delay), 2, 2, 2));
-		getInstructionManager().addInstruction(new DeployDeviceInstruction(currentTime + Utils.minutesToMicroSeconds(delay), 2, 2));
+//		int delay = 300;
+//		Crossroads cr2 = getInstructionManager().findSpecificObject(Crossroads.class, 42);
+//		getInstructionManager().addInstruction(new CreateTruck(currentTime + Utils.minutesToMicroSeconds(delay), 2, Utils.fromKmHToMmMicroSec(1)));
+//		getInstructionManager().addInstruction(new DeployConnectionEntityInstruction<Truck, Crossroads, Road>(currentTime + Utils.minutesToMicroSeconds(delay), 2, cr2.getPosition().getX(), cr2.getPosition().getY(),  true));
+//		getInstructionManager().addInstruction(new CreateCommunicationCapabilityInstruction(currentTime + Utils.minutesToMicroSeconds(delay), 2, null));
+//		getInstructionManager().addInstruction(new CreateStorageCapabilityInstruction(currentTime + Utils.minutesToMicroSeconds(delay), 2, 100000));
+//		getInstructionManager().addInstruction(new CreateDeviceInstruction(currentTime + Utils.minutesToMicroSeconds(delay), 2, 2, 2));
+//		getInstructionManager().addInstruction(new DeployDeviceInstruction(currentTime + Utils.minutesToMicroSeconds(delay), 2, 2));
 		
 		
 		
