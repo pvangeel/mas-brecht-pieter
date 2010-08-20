@@ -37,139 +37,65 @@ import framework.utils.Utils;
  *
  */
 public class DelegateMASDeliveryAgent extends Agent {
+
 	private Truck myTruck;
-	
+	private static final long evaporationMAX = 4000;
+	private long evaporation = evaporationMAX;
+	private TreeSet<Trajectory> suggestedRoutes = new TreeSet<Trajectory>();
+	private Trajectory currentTrajectory;
+	private JTextArea bovensteText;
+	private JTextArea ondersteText;
+	private boolean onRouteToDestination = false;
+	private AStarRouter router = new AStarRouter.DistanceBasedAStar();
 
 	public DelegateMASDeliveryAgent() {
-		JFrame jFrame = new JFrame();
-		jFrame.setSize(400, 500);
-		jFrame.setLocation(850, 400);
-		jFrame.setLayout(new GridLayout(2, 1));
-		bovensteText = new JTextArea();
-		ondersteText = new JTextArea();
-		jFrame.add(bovensteText);
-		jFrame.add(ondersteText);
-		jFrame.setVisible(true);
+//		JFrame jFrame = new JFrame();
+//		jFrame.setSize(400, 500);
+//		jFrame.setLocation(850, 400);
+//		jFrame.setLayout(new GridLayout(2, 1));
+//		bovensteText = new JTextArea();
+//		ondersteText = new JTextArea();
+//		jFrame.add(bovensteText);
+//		jFrame.add(ondersteText);
+//		jFrame.setVisible(true);
 	}
 
 	@Override
 	public void executeDeploymentOptions() {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void processTick(long timePassed) {
 		if(myTruck == null)
 			myTruck = (Truck) getDevice().getPhysicalEntity();
-		//
-		//
-		//		// perceive block
-		//		boolean perceiveOnConnector = myTruck.isOnConnector();
-		//		boolean perceiveOnConnection = myTruck.isOnConnection();
-		//		boolean allCommandsProcessed = myTruck.allCommandsProcessed();
-		//
-		////		int packIndex = (int) Math.floor(Math.random() * Environment.getAgentEnvInstance().searchPackages().size());
-		//		if(allCommandsProcessed) {
-		//			if(myTruck.getPDPPackageInfo() != null) { //truck is loaded with a package
-		//				destination = myTruck.getPDPPackageInfo().getDestination();
-		//			}
-		////			else {
-		////				if(destination == null && Environment.getAgentEnvInstance().searchPackages().size() > 0){
-		//////					destination = Environment.getAgentEnvInstance().searchPackages().get(0).getOrigin();
-		////					destination = Environment.getAgentEnvInstance().getStrongestFieldOrigin(myTruck.getPosition());
-		////				}
-		////			}
-		//				
-		//			if(path == null && destination != null) { // need to define a route to be followed to get the package
-		//				Trajectory t = router.calculateTrajectory(VirtualClock.currentTime(), myTruck.getConnectorPosition().getConnector(), destination);
-		//				if(t.getTrajectory() == null) {
-		//					System.out.println("===> " + myTruck.getConnectorPosition().getConnector().getPosition().getX()
-		//							+ " -" + myTruck.getConnectorPosition().getConnector().getPosition().getY());
-		////					throw new RuntimeException("EEOR");
-		//					destination = null;
-		//					path = null;
-		//				}
-		//				else
-		//					path = t.getTrajectory();
-		//				
-		//			} else {
-		//				if(path != null && path.size() > 0) {
-		//					if(perceiveOnConnector) {
-		//						Crossroads cr = path.remove(0);
-		//						if(!myTruck.getConnectorPosition().getConnector().equals(cr)){
-		//							myTruck.addCommand(new LeaveCrossroadCommand(myTruck, myTruck.getConnectorPosition().getConnector().getConnectionTo(cr)), this);
-		//							lastTime = VirtualClock.currentTime();
-		//						}
-		//						lastLocation = cr;
-		//					}
-		//					else {
-		//						if(perceiveOnConnection){
-		//							if (myTruck.getConnectionPosition().getConnection().isAtEnd(myTruck)) {
-		//								myTruck.addCommand(new EnterConnectorCommand<Truck, Crossroads, Road>(myTruck, true), this);
-		//							} else {
-		//								myTruck.addCommand(new MoveForwardCommand(myTruck), this);
-		//							}
-		//						}	
-		//					}
-		//				} else {
-		//					if(perceiveOnConnector) {
-		//						if(myTruck.getConnectorPosition().getConnector().equals(destination)) {
-		//							if(myTruck.getConnectorPosition().getConnector().hasPackage()) {
-		//								System.out.println("Picking");
-		//								myTruck.addCommand(new PickPackage(myTruck), this);
-		//								
-		//								lastLocation = myTruck.getConnectorPosition().getConnector();
-		//							}
-		//							if (myTruck.getPDPPackageInfo() != null) {
-		//								lastLocation = myTruck.getConnectorPosition().getConnector();
-		//								
-		//								System.out.println("Delivering");
-		//								myTruck.addCommand(new DropPackage(myTruck, myTruck.getPDPPackageInfo()), this);
-		//							}
-		//							path = null;
-		//							destination = null;
-		//						}
-		//						
-		//					}
-		//					else {
-		//						if(perceiveOnConnection){
-		//							if (myTruck.getConnectionPosition().getConnection().isAtEnd(myTruck)) {
-		//								myTruck.addCommand(new EnterConnectorCommand<Truck, Crossroads, Road>(myTruck, true), this);
-		//							} else {
-		//								myTruck.addCommand(new MoveForwardCommand(myTruck), this);
-		//							}
-		//						}
-		//					}
-		//				}
-		//			}
-		//		}
-		//	}
-		
-		
 		checkForBetterRoute();
 		drive();
-//		updateVenster();
+		//		updateVenster();
 	}
 
 	private void checkForBetterRoute() {
-		if(onRouteToDestination){
-			suggestedRoutes.clear();
-			return;
-		}
+		if(onRouteToDestination) return;
+
 		boolean hasBetter = hasBetterRoute();
-		if(currentTrajectory == null || hasBetter){
-			boolean reserved = tryToReserveBest();
-			if(reserved){
-				restoreEvaporation();
-			}
+
+		if(hasBetter && tryToReserveBest()){
+			restoreEvaporation();
 		}
-		
+
 		decreaseEvaporation();
 		suggestedRoutes.clear();
 	}
 
+	private boolean hasBetterRoute() {
+		if(suggestedRoutes.size() == 0) return false;
+		if(currentTrajectory == null) return true;
+
+		return suggestedRoutes.first().isBetter(currentTrajectory);
+	}
+
 	private boolean tryToReserveBest() {
+		//hasBetter == true
 		if(currentTrajectory != null){
 			//remove trajectories that are worse
 			while(currentTrajectory.isBetter(suggestedRoutes.last())){
@@ -179,12 +105,15 @@ public class DelegateMASDeliveryAgent extends Agent {
 		while(!suggestedRoutes.isEmpty()){
 			if(suggestedRoutes.first().getPdpPackage().reserve(this, suggestedRoutes.first())){
 				currentTrajectory = suggestedRoutes.first();
-				System.out.println("Better route reserved");
 				return true;
 			}
 			suggestedRoutes.pollFirst();
 		}
 		return false;
+	}
+
+	private void restoreEvaporation() {
+		evaporation = evaporationMAX;
 	}
 
 	private void decreaseEvaporation() {
@@ -193,83 +122,74 @@ public class DelegateMASDeliveryAgent extends Agent {
 			currentTrajectory = null;
 		}
 	}
-	
-	private void restoreEvaporation() {
-		evaporation = evaporationMAX;
-	}
-
-	private boolean hasBetterRoute() {
-		if(suggestedRoutes.size() != 0){
-			if(currentTrajectory == null) return true;
-			if(suggestedRoutes.first().isBetter(currentTrajectory))
-				return true;
-			else
-				return false;
-		}
-		return false;
-	}
 
 	private void drive() {
 		boolean perceiveOnConnector = myTruck.isOnConnector();
 		boolean perceiveOnConnection = myTruck.isOnConnection();
 		boolean allCommandsProcessed = myTruck.allCommandsProcessed();
 
-		if(!allCommandsProcessed)
-			return;
-		//TODO: als trucks elkaar niet kunnen inhalen, moeten trucks random blijven rijden
-		if(currentTrajectory == null)
-			return;
-			
-		if(perceiveOnConnector) {
-			if(currentTrajectory.size() == 0){
-				//pick up/drop package
-				
-				if(onRouteToDestination){
-					myTruck.addCommand(new DropPackage(myTruck, myTruck.getPDPPackageInfo()), this);
-					onRouteToDestination = false;
-					currentTrajectory = null;
-					if(myTruck.getConnectorPosition().getConnector().hasPackage()             /*crossroad has package*/)
-						currentTrajectory = new Trajectory(myTruck.getConnectorPosition().getConnector().getPackage());
-						pickPackage();
-					return;
-				}else{
-					pickPackage();
-					return;
-				}
-			}
-			Crossroads cr = currentTrajectory.getAndRemoveFirst();
-			if(myTruck.getConnectorPosition().getConnector().equals(cr)) return;
-			
-			Road road = myTruck.getConnectorPosition().getConnector().getConnectionTo(cr);
-			myTruck.addCommand(new LeaveCrossroadCommand(myTruck, road), this);
-			
-			return;
-		}
+		if(!allCommandsProcessed) return;
+		if(currentTrajectory == null) return;
 
-		if(perceiveOnConnection){
-			if (myTruck.getConnectionPosition().getConnection().isAtEnd(myTruck)) {
-				myTruck.addCommand(new EnterConnectorCommand<Truck, Crossroads, Road>(myTruck, true), this);
-			} else {
-				myTruck.addCommand(new MoveForwardCommand(myTruck), this);
-			}
+		if(perceiveOnConnector) handleCrossroads();
+
+		if(perceiveOnConnection) handleRoad();
+
+		if(perceiveOnConnection && perceiveOnConnector) throw new NullPointerException();
+	}
+
+	private void handleRoad() {
+		if (myTruck.getConnectionPosition().getConnection().isAtEnd(myTruck)) {
+			myTruck.addCommand(new EnterConnectorCommand<Truck, Crossroads, Road>(myTruck, true), this);
+		} else {
+			myTruck.addCommand(new MoveForwardCommand(myTruck), this);
+		}
+	}
+
+	private void handleCrossroads() {
+		if(pickUpOrDrop()) return;
+
+		//Indien de truck op een crossroads staat en net een nieuwe trajectory heeft gekregen is de eerste in de trajectory nog de crossroads waar hij op staat
+		Crossroads cr = currentTrajectory.getAndRemoveFirst();
+		if(myTruck.getConnectorPosition().getConnector().equals(cr)) return;
+
+		Road road = myTruck.getConnectorPosition().getConnector().getConnectionTo(cr);
+		myTruck.addCommand(new LeaveCrossroadCommand(myTruck, road), this);
+	}
+
+	private boolean pickUpOrDrop(){
+		if(currentTrajectory.size() != 0) return false;
+
+		if(onRouteToDestination){
+			dropPackage();
+		}else{
+			pickPackage();
+		}
+		
+		return true;
+	}
+
+	private void dropPackage() {
+		//deze getPDPPackageInfo is soms null!
+		
+		myTruck.addCommand(new DropPackage(myTruck, myTruck.getPDPPackageInfo()), this);
+		onRouteToDestination = false;
+		suggestedRoutes.clear();
+		currentTrajectory = null;
+		
+		if(myTruck.getConnectorPosition().getConnector().hasPackage()             /*crossroad has package*/){
+			currentTrajectory = new Trajectory(myTruck.getConnectorPosition().getConnector().getPackage());
+			pickPackage();
 		}
 	}
 
 	private void pickPackage() {
 		myTruck.addCommand(new PickPackage(myTruck), this);
-		restoreEvaporation();
 		onRouteToDestination = true;
 		currentTrajectory = router.calculateTrajectory(currentTrajectory.getPdpPackage(), VirtualClock.currentTime(), currentTrajectory.getPdpPackage().getOrigin(), currentTrajectory.getPdpPackage().getDestination());
 	}
 
-	private static final long evaporationMAX = 4000;
-	private long evaporation = evaporationMAX;
-	private TreeSet<Trajectory> suggestedRoutes = new TreeSet<Trajectory>();
-	private Trajectory currentTrajectory;
-	private JTextArea bovensteText;
-	private JTextArea ondersteText;
-	private boolean onRouteToDestination = false;
-	private AStarRouter router = new AStarRouter.DistanceBasedAStar();
+
 
 	public boolean confirmTruck(PDPPackage pdpPackage){
 		if(currentTrajectory == null) return false;
@@ -281,20 +201,21 @@ public class DelegateMASDeliveryAgent extends Agent {
 	}
 
 	public void suggestRoute(Trajectory route) {
+		if(onRouteToDestination) return;
 		suggestedRoutes.add(route);
 		updateVenster();
 	}
 
 	private void updateVenster() {
-		ondersteText.setText("");
-		for (Trajectory traj : suggestedRoutes) {
-			ondersteText.append(traj.toString() + "\n");
-		}
-		if(currentTrajectory == null){
-			bovensteText.setText("geen route");
-		}else{
-			bovensteText.setText(currentTrajectory.toString());
-		}
+//		ondersteText.setText("");
+//		for (Trajectory traj : suggestedRoutes) {
+//			ondersteText.append(traj.toString() + "\n");
+//		}
+//		if(currentTrajectory == null){
+//			bovensteText.setText("geen route");
+//		}else{
+//			bovensteText.setText(currentTrajectory.toString());
+//		}
 	}
 
 	public Trajectory getCurrentRoute() {

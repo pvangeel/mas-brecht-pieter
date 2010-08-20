@@ -37,7 +37,7 @@ public abstract class GUIConnector extends GUIObject {
 	protected void drawProtected(Graphics g) {
 		g.setColor(Color.black);
 		g.drawOval(convertX(getPosition().getX()) - radius, convertY(getPosition().getY()) - radius, diameter, diameter);
-		g.drawString(getId() + "", convertX(getPosition().getX()), convertY(getPosition().getY()));
+//		g.drawString(getId() + "", convertX(getPosition().getX()), convertY(getPosition().getY()));
 	}
 
 	@Override

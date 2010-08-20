@@ -97,7 +97,7 @@ public class Crossroads extends Connector<Truck, Crossroads, Road> {
 		this.pdpPackage = null;
 		if( ret != null){
 			Environment.getInstance().pickPackage(ret.getDTO());
-			EventBroker.getEventBroker().notifyAll(new PackagePickedEvent(ret.getId(), ret.getDestination().getPosition(), truck));
+			EventBroker.getEventBroker().notifyAll(new PackagePickedEvent(ret, ret.getDestination().getPosition(), truck));
 			ret.packagePicked();
 		}
 		return ret;
@@ -122,14 +122,14 @@ public class Crossroads extends Connector<Truck, Crossroads, Road> {
 	public void receivePackage(PDPPackage p) {
 		Environment.getInstance().deliverPackage(p.getDTO());
 		EventBroker.getEventBroker().notifyAll(new PackageDeliveredEvent(p.getId(), getOnroadEntities().getFirst()));
-		p.packageDelivered();
+//		p.packageDelivered();
 	}
 
 	public void addPackage(PDPPackage p) {
 		this.pdpPackage = p;
 		Environment.getInstance().addPackage(p.getDTO());
-		EventBroker.getEventBroker().notifyAll(new PackageCreatedEvent(p.getId(), this.getPosition()));
-		p.packageAdded();
+		EventBroker.getEventBroker().notifyAll(new PackageCreatedEvent(p, this.getPosition()));
+//		p.packageAdded();
 	}
 
 	

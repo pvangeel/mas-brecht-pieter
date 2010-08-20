@@ -67,7 +67,9 @@ public class Trajectory implements Comparable<Trajectory> {
 	}
 
 	public boolean isBetter(Trajectory other) {
-		return getLength() < other.getLength();
+		int compare = compareTo(other);
+		if(compare == -1) return true;
+		return false;
 	}
 
 	private long getLength() {
@@ -81,6 +83,9 @@ public class Trajectory implements Comparable<Trajectory> {
 
 	@Override
 	public int compareTo(Trajectory o) {
+		if(getPdpPackage().getPackagePriority() > o.getPdpPackage().getPackagePriority()) return -1;
+		if(getPdpPackage().getPackagePriority() < o.getPdpPackage().getPackagePriority()) return 1;
+		
 		if(getLength() < o.getLength()) return -1;
 		if(getLength() > o.getLength()) return 1;
 		return 0;
