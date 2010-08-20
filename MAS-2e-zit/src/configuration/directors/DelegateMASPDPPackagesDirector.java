@@ -33,7 +33,7 @@ import framework.utils.Utils;
 @Deprecated
 public class DelegateMASPDPPackagesDirector extends InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> {
 
-	private static final int PACKAGES_PER_HOUR = 1;
+	private static final int PACKAGES_PER_HOUR = 3;
 	private static final long PACKAGE_GENERATOR_SEED = 1290299;
 	private static final int TOTAL_NUMBER_OF_PACKAGES = 2000;
 	private Random random;
@@ -88,7 +88,7 @@ public class DelegateMASPDPPackagesDirector extends InitializationDirector<Physi
 //				int deviceId = IdGenerator.getIdGenerator().getNextId(Device.class);
 				getInstructionManager().addInstruction(new CreatePDPPackage(currentTime, packageId, cr1, cr2, 10.0));
 				getInstructionManager().addInstruction(new DeployPDPPackage(currentTime, packageId));
-				System.out.println("Package deployed:" + packageId);
+//				System.out.println("Package deployed:" + packageId);
 				//getInstructionManager().addInstruction(new DeployAgentInstruction(currentTime, lastId + i, 1));
 				
 				//getInstructionManager().addInstruction(new DeployConnectionEntityInstruction<Truck, Crossroads, Road>(currentTime, 1, cr1.getPosition().getX(), cr1.getPosition().getY(),  true));

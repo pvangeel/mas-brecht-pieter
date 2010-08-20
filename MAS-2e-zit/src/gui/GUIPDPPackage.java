@@ -3,6 +3,8 @@ package gui;
 import java.awt.Graphics;
 import java.awt.Image;
 
+import layer.physical.entities.PDPPackage;
+
 import framework.events.Event;
 import framework.graphics.SpriteStore;
 import framework.gui.GUIObject;
@@ -14,17 +16,20 @@ public class GUIPDPPackage extends GUIObject {
 	private static final int imageWidth = image.getWidth(null);
 	private static final int imageHeight = image.getHeight(null);
 	private ContinuousPosition position;
+	private PDPPackage pdpPackage;
 	private int id;
 
-	public GUIPDPPackage(int id, ContinuousPosition position) {
-		super(id);
-		this.id = id;
+	public GUIPDPPackage(PDPPackage pdpPackage, ContinuousPosition position) {
+		super(pdpPackage.getId());
+		this.pdpPackage = pdpPackage;
+		this.id = pdpPackage.getId();
 		this.position = position;
 	}
 
 	@Override
 	public void drawProtected(Graphics g) {
 		g.drawImage(image, convertX(position.getX()) - imageWidth / 2, convertY(position.getY()) - imageHeight / 2, null);
+		g.drawString("p:" + pdpPackage.getPackagePriority(), convertX(position.getX()) + 5, convertY(position.getY()) + 20);
 	}
 
 	@Override

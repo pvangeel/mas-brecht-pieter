@@ -17,7 +17,7 @@ public class GUIPackageCreator extends GUIObjectCreator {
 	protected GUIObject createGUIObject(Event event) {
 		if (event instanceof PackageCreatedEvent ) {
 			PackageCreatedEvent e = (PackageCreatedEvent) event;
-			return new GUIPDPPackage(e.getPackageId(), e.getPosition());
+			return new GUIPDPPackage(e.getPackage(), e.getPosition());
 		} else {
 			throw new IllegalStateException();
 		}
@@ -38,7 +38,7 @@ public class GUIPackageCreator extends GUIObjectCreator {
 		if (event instanceof PackagePickedEvent ) {
 			System.out.println("GUI PICKED");
 			PackagePickedEvent e = (PackagePickedEvent) event;
-			return new GUIPDPPackage(e.getPackageId(), null);
+			return new GUIPDPPackage(e.getPackage(), null);
 		} else {
 			throw new IllegalStateException();
 		}

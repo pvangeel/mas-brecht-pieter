@@ -18,8 +18,8 @@ public class DelegateMasSimulation {
 	 */
 	public static void main(String[] args) {
 		
-		int numberOfLinesInGrid = 7;
-		int numberOfAgents = 1;
+		int numberOfLinesInGrid = 9;
+		int numberOfAgents = 3;
 		
 		new SimpleGUI(numberOfLinesInGrid);
 //		new MyFirstEventListener(); //creates a simple event listener

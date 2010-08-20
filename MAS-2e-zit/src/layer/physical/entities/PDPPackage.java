@@ -1,19 +1,11 @@
 package layer.physical.entities;
 
-import java.util.Set;
-
 import ants.ExplorationAnt;
 
 import layer.agent.entities.DelegateMASDeliveryAgent;
 import layer.devices.Trajectory;
-import layer.physical.events.GradientFieldCreatedEvent;
-import layer.physical.events.GradientFieldDestroyedEvent;
-import framework.core.SimulationCore;
 import framework.core.VirtualClock;
-import framework.events.EventBroker;
-import framework.layer.agent.Agent;
 import framework.layer.physical.command.Command;
-import framework.layer.physical.entities.PhysicalEntity;
 import framework.layer.physical.entities.Resource;
 import framework.layer.physical.position.Position;
 import framework.utils.Utils;
@@ -30,14 +22,26 @@ public class PDPPackage extends Resource<PDPPackage> {
 	private Crossroads destination;
 	private double weight;
 	private int id;
+	
+	private long packagePriority = 0;
+	private int timesSentAnts = 0;
+	private int tresholdToIncreasePriority = 500;
+	
+	private long lastAntsSent = 0; //VirtualClock.currentTime();
+	private long delta = Utils.minutesToMicroSeconds(1);
+	//TODO: evt aanpassen als package gereserveerd is
+	private int currentHops = 20;
+	private static final int maxHOPS = 20;
+	private int nbAnts = 20;
+	private final long timeCreated = VirtualClock.currentTime();
 
-	public PDPPackage(int id, Crossroads origin, Crossroads destination, double weigth) {
+	public PDPPackage(int id, Crossroads origin, Crossroads destination, double weight) {
 		this.id = id;
 		this.origin = origin;
 		this.destination = destination;
-		this.weight = weigth;
+		this.weight = weight;
 	}
-
+	
 	public Crossroads getDestination() {
 		return destination;
 	}
@@ -46,10 +50,6 @@ public class PDPPackage extends Resource<PDPPackage> {
 		return origin;
 	}
 	
-//	public long getRadius() {
-//		return lastRadius;
-//	}
-
 	/**
 	 * Creates a DTO representation of this PDPPackage
 	 * @return
@@ -62,61 +62,18 @@ public class PDPPackage extends Resource<PDPPackage> {
 		return id;
 	}
 
-//	private boolean hasGradientField = false;
-	private boolean packageAdded = false;
-	private boolean packagedPicked = false;
-	private boolean packageDelivered = false;
-//	private boolean action1 = false;
-//	private boolean action0 = false;
-	
-//	private long tLastGFIncrease = 0;
-//	private long lastRadius = Utils.metersToMillimeter(10);
-//	private int INCREASE_RADIUS_BY = 50;
-	
-	public void packageAdded() {
-		packageAdded = true;
-	}
+	private boolean packagePicked = false;
 	
 	public void packagePicked() {
-		packagedPicked = true;
+		packagePicked = true;
 	}
-	
-	public void packageDelivered() {
-		packageDelivered = true;
-	}
-	
-//	public void setGradientField() {
-//		hasGradientField = true;
-//	}
 	
 	@Override
 	public void processTick(long timePassed) {
-//		if(hasGradientField == false && packageAdded) {
-//			EventBroker.getEventBroker().notifyAll(new GradientFieldCreatedEvent(id, origin.getPosition(), lastRadius));
-//			setGradientField();
-//			action0 = true;
-//		}
-//		
-//		if(action0 && packagedPicked && ! action1) {
-//			EventBroker.getEventBroker().notifyAll(new GradientFieldDestroyedEvent(id));
-//			action1  = true;
-//		}
-//		if(action0 && !action1){ //increase size of GF
-//			if(tLastGFIncrease + delta <= VirtualClock.currentTime()) {
-//				tLastGFIncrease = VirtualClock.currentTime();
-//				lastRadius += Utils.metersToMillimeter(INCREASE_RADIUS_BY);
-//				
-//				EventBroker.getEventBroker().notifyAll(new GradientFieldDestroyedEvent(id));
-//				EventBroker.getEventBroker().notifyAll(new GradientFieldCreatedEvent(id, origin.getPosition(), lastRadius ));
-//				
-//			}
-//		}
-		
-		if(!packagedPicked){
+		if(!packagePicked){
 			confirmTruck();
 			sendExplorationAnts();
 		}
-//		System.out.println("tick");
 	}
 	
 	
@@ -125,7 +82,6 @@ public class PDPPackage extends Resource<PDPPackage> {
 			if(!currentTruck.confirmTruck(this)){
 				currentTruck = null;
 			}
-			
 		}
 	}
 	
@@ -167,14 +123,6 @@ public class PDPPackage extends Resource<PDPPackage> {
 		return packagePriority;
 	}
 
-	private long packagePriority = 1;
-	private long lastAntsSent = VirtualClock.currentTime();
-	private long delta = Utils.secondsToMicroSeconds(400);
-	//TODO: evt aanpassen als package gereserveerd is
-	private int currentHops = 1;
-	private static final int maxHOPS = 20;
-	private int nbAnts = 50;
-	
 	private void sendExplorationAnts() {
 		if(lastAntsSent + delta < VirtualClock.currentTime()) {
 			for (int i = 0; i < nbAnts; i++) {
@@ -183,6 +131,8 @@ public class PDPPackage extends Resource<PDPPackage> {
 				//TODO: dubbels vermijden?
 			}
 			currentHops++;
+			timesSentAnts++;
+			if(timesSentAnts % tresholdToIncreasePriority == 0) packagePriority++;
 			lastAntsSent = VirtualClock.currentTime();
 		}
 	}
@@ -190,9 +140,9 @@ public class PDPPackage extends Resource<PDPPackage> {
 
 	@Override
 	public Position getPosition() {
-		// TODO Auto-generated method stub
-		//if pickedUp: Truck location, else origin.
-		
+		//TODO:if pickedUp: Truck location
+		if(!packagePicked)
+			return origin.getPosition();
 		return null;
 	}
 
