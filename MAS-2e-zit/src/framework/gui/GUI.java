@@ -34,9 +34,9 @@ import framework.utils.TimeUtils;
  */
 public abstract class GUI extends JPanel implements EventListener {
 
-	private static final int guiWidth = 1200;
-	private static final int guiHeight = 750;
-	private static final long repaintInterval = 100;
+	private final int guiWidth/* = 1200*/;
+	private final int guiHeight/* = 750*/;
+	private final long repaintInterval = 100;
 
 	private ContinuousPosition upperLeft = new ContinuousPosition(0L, 0L);
 	private long milliMeterPerPixel = 5000L;
@@ -55,8 +55,12 @@ public abstract class GUI extends JPanel implements EventListener {
 
 	/**
 	 * Creates the GUI and starts listening to all event out of the framework
+	 * @param guiHeight 
+	 * @param guiWidth 
 	 */
-	public GUI() {
+	public GUI(int guiWidth, int guiHeight) {
+		this.guiWidth = guiWidth;
+		this.guiHeight = guiHeight;
 		EventBroker.getEventBroker().register(this);
 		initializeGUIObjectCreators();
 		timer.schedule(new RepaintTask(), repaintInterval);

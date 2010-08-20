@@ -24,20 +24,20 @@ public class DelegateMASPDPBuilder extends ExperimentBuilder<PhysicalConnectionS
 
 	private File osmMapFile;
 	private int width;
-	private int height;
 	
 	private boolean regularGrid = false;
+	private final int numberOfAgents;
 
-	public DelegateMASPDPBuilder(File osmMapFile) {
+	public DelegateMASPDPBuilder(File osmMapFile, int numberOfAgents) {
+		this.numberOfAgents = numberOfAgents;
 		if(osmMapFile == null)
 			throw new IllegalArgumentException("Should be a file.");
 		this.osmMapFile = osmMapFile;
 	}
 	
-	public DelegateMASPDPBuilder(int width, int height) {
+	public DelegateMASPDPBuilder(int width, int numberOfAgents) {
 		this.width = width;
-		this.height = height;
-		width = height;
+		this.numberOfAgents = numberOfAgents;
 		regularGrid = true;
 	}
 	
@@ -56,15 +56,13 @@ public class DelegateMASPDPBuilder extends ExperimentBuilder<PhysicalConnectionS
 		
 		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> roadInfrastructure;
 		if(regularGrid) {
-			roadInfrastructure = new RegularGridDirector(width, height);
+			roadInfrastructure = new RegularGridDirector(width);
 		} else {
 			roadInfrastructure = new OSMDirector(osmMapFile);
 		}
 //		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> vehicles = new GradientVehiclesInitializationDirector();
 //		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> agents = new GradientAgentsInitializationDirector();
 //		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> packages = new GradientPDPPackagesDirector();
-		
-		int numberOfAgents = 4;
 		
 		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> vehicles = new DelegateMASVehiclesInitializationDirector(numberOfAgents, width);
 		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> agents = new DelegateMASAgentsInitializationDirector(numberOfAgents);

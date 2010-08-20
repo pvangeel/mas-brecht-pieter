@@ -110,6 +110,10 @@ public class Crossroads extends Connector<Truck, Crossroads, Road> {
 			return false;
 	}
 	
+	public PDPPackage getPackage(){
+		return pdpPackage;
+	}
+	
 	
 	
 	/**
