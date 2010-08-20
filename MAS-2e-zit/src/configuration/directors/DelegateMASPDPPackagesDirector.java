@@ -35,13 +35,15 @@ public class DelegateMASPDPPackagesDirector extends InitializationDirector<Physi
 
 	private static final int PACKAGES_PER_HOUR = 1;
 	private static final long PACKAGE_GENERATOR_SEED = 1290299;
-	private static final int TOTAL_NUMBER_OF_PACKAGES = 1;
+	private static final int TOTAL_NUMBER_OF_PACKAGES = 2;
 	private Random random;
 	private int numberOfPackages = 0;
+	private long lastTime = 0;
 	
 	public DelegateMASPDPPackagesDirector() {
 		super(new IntervalTimePattern(Utils.minutesToMicroSeconds(10)));
 		random = new Random(PACKAGE_GENERATOR_SEED);
+//		random = new Random();
 	}
 
 	/**
@@ -50,6 +52,9 @@ public class DelegateMASPDPPackagesDirector extends InitializationDirector<Physi
 	@Override
 	protected void createAndDeploy() {
 		long currentTime = VirtualClock.currentTime();
+		if(numberOfPackages == 1 && currentTime - lastTime < Utils.minutesToMicroSeconds(300))
+			return;
+		lastTime = currentTime;
 		if(numberOfPackages >= TOTAL_NUMBER_OF_PACKAGES) {
 			return;
 		}
@@ -59,8 +64,8 @@ public class DelegateMASPDPPackagesDirector extends InitializationDirector<Physi
 			int id1 = nodesExternalIds[(int)Math.ceil(random.nextDouble() * (nodesExternalIds.length - 1))];
 			int id2 = nodesExternalIds[(int)Math.ceil(random.nextDouble() * (nodesExternalIds.length - 1))];
 			
-			id1 = 23;
-			id2 = 3;
+			id1 = 48 - numberOfPackages * 40;
+			id2 = 3 + numberOfPackages * 1;
 			//TODO: wegdoen
 			
 			Crossroads cr1 = getInstructionManager().findSpecificObject(Crossroads.class, id1);
@@ -92,7 +97,7 @@ public class DelegateMASPDPPackagesDirector extends InitializationDirector<Physi
 		numberOfPackages += i; 
 	}
 
-	private int[] nodesExternalIds = {0,1,2,3,4,5,6,7,8};
+	private int[] nodesExternalIds = {48, 33};
 	
 	private int[] nodesExternalIds2 = {60225758,
 			34985418,

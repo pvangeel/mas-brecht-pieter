@@ -40,7 +40,7 @@ public class DelegateMASDeliveryAgent extends Agent {
 
 	public DelegateMASDeliveryAgent() {
 		JFrame jFrame = new JFrame();
-		jFrame.setSize(200, 300);
+		jFrame.setSize(400, 500);
 		jFrame.setLocation(800, 400);
 		jFrame.setLayout(new GridLayout(2, 1));
 		bovensteText = new JTextArea();
@@ -173,6 +173,7 @@ public class DelegateMASDeliveryAgent extends Agent {
 		while(!suggestedRoutes.isEmpty()){
 			if(suggestedRoutes.first().getPdpPackage().reserve(this, suggestedRoutes.first())){
 				currentTrajectory = suggestedRoutes.first();
+				System.out.println("Better route reserved");
 				return true;
 			}
 			suggestedRoutes.pollFirst();
