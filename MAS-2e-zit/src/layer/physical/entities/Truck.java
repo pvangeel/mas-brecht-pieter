@@ -53,7 +53,7 @@ public class Truck extends Vehicle<Truck, Crossroads, Road>{
 			throw new IllegalStateException("Truck is already carrying a package");
 		}
 		
-		this.pdpPackage = getConnectorPosition().getConnector().pickPackage();
+		this.pdpPackage = getConnectorPosition().getConnector().pickPackage(this);
 	}
 	
 	public void unload() {

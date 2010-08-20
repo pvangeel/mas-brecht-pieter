@@ -92,12 +92,12 @@ public class Crossroads extends Connector<Truck, Crossroads, Road> {
 	/**
 	 * By convention, this method should be called just by a command
 	 */
-	public PDPPackage pickPackage() {
+	public PDPPackage pickPackage(Truck truck) {
 		PDPPackage ret = this.pdpPackage; //esta com NULL por aqui
 		this.pdpPackage = null;
 		if( ret != null){
 			Environment.getInstance().pickPackage(ret.getDTO());
-			EventBroker.getEventBroker().notifyAll(new PackagePickedEvent(ret.getId(), ret.getDestination().getPosition()));
+			EventBroker.getEventBroker().notifyAll(new PackagePickedEvent(ret.getId(), ret.getDestination().getPosition(), truck));
 			ret.packagePicked();
 		}
 		return ret;
@@ -117,7 +117,7 @@ public class Crossroads extends Connector<Truck, Crossroads, Road> {
 	 */
 	public void receivePackage(PDPPackage p) {
 		Environment.getInstance().deliverPackage(p.getDTO());
-		EventBroker.getEventBroker().notifyAll(new PackageDeliveredEvent(p.getId()));
+		EventBroker.getEventBroker().notifyAll(new PackageDeliveredEvent(p.getId(), getOnroadEntities().getFirst()));
 		p.packageDelivered();
 	}
 
