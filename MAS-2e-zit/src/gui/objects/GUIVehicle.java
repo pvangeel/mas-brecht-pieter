@@ -1,5 +1,7 @@
 package gui.objects;
 
+import layer.physical.events.PackageDeliveredEvent;
+import layer.physical.events.PackagePickedEvent;
 import framework.events.Event;
 import framework.events.physical.EntityEntersConnectorOffRoadEvent;
 import framework.events.physical.EntityEntersConnectorOnRoadEvent;
@@ -22,6 +24,8 @@ public abstract class GUIVehicle extends GUIConnectionEntity {
 		getGui().getDispatcher().register(EntityLeavesConnectorOffRoadEvent.class, this);
 		getGui().getDispatcher().register(EntityLeavesConnectorOnRoadEvent.class, this);
 		getGui().getDispatcher().register(PositionOnConnectionUpdatedEvent.class, this);
+		getGui().getDispatcher().register(PackagePickedEvent.class, this);
+		getGui().getDispatcher().register(PackageDeliveredEvent.class, this);
 	}
 
 	@Override
