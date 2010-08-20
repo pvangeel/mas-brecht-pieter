@@ -10,6 +10,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import layer.physical.entities.Crossroads;
+import layer.physical.entities.PDPPackage;
 import layer.physical.entities.Road;
  
 //import be.kuleuven.cs.distrinet.agentwise.traffic.coordination.agents.AgentRegistry;
@@ -27,7 +28,7 @@ import layer.physical.entities.Road;
 public abstract class AStarRouter {
  
 	@SuppressWarnings("boxing")
-	public Trajectory calculateTrajectory( final long currentTime, final Crossroads start, final Crossroads end ) {
+	public Trajectory calculateTrajectory(PDPPackage pdpPackage, final long currentTime, final Crossroads start, final Crossroads end) {
 		if( start == null ) {
 			throw new IllegalArgumentException( "Start should not be null" );
 		}
@@ -35,7 +36,7 @@ public abstract class AStarRouter {
 			throw new IllegalArgumentException( "End should not be null" );
 		}
  
-		final Trajectory trajectory = new Trajectory();
+		final Trajectory trajectory = new Trajectory(pdpPackage);
  
 		final Set<Crossroads> closedSet = new HashSet<Crossroads>();
  
