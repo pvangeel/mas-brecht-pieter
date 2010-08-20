@@ -21,7 +21,8 @@ public class SimpleGUI extends GUI {
 
 	private static final long serialVersionUID = 1L;
 
-	public SimpleGUI() {
+	public SimpleGUI(int numberOfLinesInGrid) {
+		super(numberOfLinesInGrid * 62 + 50, numberOfLinesInGrid * 62 + 50);
 		// LLPosition beginPosition = new LLPosition(50.8780898, 4.7086349);
 		// setUpperLeft(new ContinuousPosition(beginPosition.getX(),
 		// beginPosition.getY()));

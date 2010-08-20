@@ -67,12 +67,17 @@ public class DelegateMASPDPPackagesDirector extends InitializationDirector<Physi
 //			int id2 = nodesExternalIds[(int)Math.ceil(random.nextDouble() * (nodesExternalIds.length - 1))];
 			
 			int id1 = (int) (Math.random() * maxIdOfNode);
+			Crossroads cr1 = getInstructionManager().findSpecificObject(Crossroads.class, id1);
+			while(cr1.hasPackage()){
+				id1 = (int) (Math.random() * maxIdOfNode);
+				cr1 = getInstructionManager().findSpecificObject(Crossroads.class, id1);
+			}
 			int id2 = (int) (Math.random() * maxIdOfNode);
 			while(id1 == id2){
 				id2 = (int) (Math.random() * maxIdOfNode);
 			}
 			
-			Crossroads cr1 = getInstructionManager().findSpecificObject(Crossroads.class, id1);
+			
 			Crossroads cr2 = getInstructionManager().findSpecificObject(Crossroads.class, id2);
 			
 			

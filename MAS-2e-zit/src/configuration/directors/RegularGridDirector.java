@@ -36,10 +36,10 @@ public class RegularGridDirector
 		// TODO Auto-generated constructor stub
 	}
 
-	public RegularGridDirector(int width, int height) {
+	public RegularGridDirector(int width) {
 		super(new StartupTimePattern());
 		this.width = width;
-		this.height = height;
+		this.height = width;
 
 	}
 

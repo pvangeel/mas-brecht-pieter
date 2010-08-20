@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 import framework.core.VirtualClock;
 import framework.layer.agent.Agent;
 import framework.layer.physical.command.move.EnterConnectorCommand;
+import framework.utils.Utils;
 
 /**
  * This agent is meant to show how to issue commands.
@@ -221,18 +222,18 @@ public class DelegateMASDeliveryAgent extends Agent {
 			
 		if(perceiveOnConnector) {
 			if(currentTrajectory.size() == 0){
-				//TODO pick up/drop package
+				//pick up/drop package
 				
 				if(onRouteToDestination){
 					myTruck.addCommand(new DropPackage(myTruck, myTruck.getPDPPackageInfo()), this);
 					onRouteToDestination = false;
 					currentTrajectory = null;
+					if(myTruck.getConnectorPosition().getConnector().hasPackage()             /*crossroad has package*/)
+						currentTrajectory = new Trajectory(myTruck.getConnectorPosition().getConnector().getPackage());
+						pickPackage();
 					return;
 				}else{
-					myTruck.addCommand(new PickPackage(myTruck), this);
-					restoreEvaporation();
-					onRouteToDestination = true;
-					currentTrajectory = router.calculateTrajectory(currentTrajectory.getPdpPackage(), VirtualClock.currentTime(), currentTrajectory.getPdpPackage().getOrigin(), currentTrajectory.getPdpPackage().getDestination());
+					pickPackage();
 					return;
 				}
 			}
@@ -252,6 +253,13 @@ public class DelegateMASDeliveryAgent extends Agent {
 				myTruck.addCommand(new MoveForwardCommand(myTruck), this);
 			}
 		}
+	}
+
+	private void pickPackage() {
+		myTruck.addCommand(new PickPackage(myTruck), this);
+		restoreEvaporation();
+		onRouteToDestination = true;
+		currentTrajectory = router.calculateTrajectory(currentTrajectory.getPdpPackage(), VirtualClock.currentTime(), currentTrajectory.getPdpPackage().getOrigin(), currentTrajectory.getPdpPackage().getDestination());
 	}
 
 	private static final long evaporationMAX = 4000;

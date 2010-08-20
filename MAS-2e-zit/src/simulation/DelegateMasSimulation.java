@@ -17,14 +17,18 @@ public class DelegateMasSimulation {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		new SimpleGUI();
+		
+		int numberOfLinesInGrid = 7;
+		int numberOfAgents = 1;
+		
+		new SimpleGUI(numberOfLinesInGrid);
 //		new MyFirstEventListener(); //creates a simple event listener
 		//new PackagesCreatedEventListener();
 		//new PackagesDeliveredEventListener();
 		//new Experiment<PhysicalConnectionStructure<Truck, Crossroads, Road>>(4, new GradientFieldPDPBuilder(new File("leuven.osm.xml")));
 		
 //		new Experiment<PhysicalConnectionStructure<Truck, Crossroads, Road>>(1, new DelegateMASPDPBuilder(new File("leuven.osm.xml")));
-		new Experiment<PhysicalConnectionStructure<Truck, Crossroads, Road>>(1, new DelegateMASPDPBuilder(12,12));
+		new Experiment<PhysicalConnectionStructure<Truck, Crossroads, Road>>(1, new DelegateMASPDPBuilder(numberOfLinesInGrid,numberOfAgents));
 		
 	}
 
