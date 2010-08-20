@@ -35,14 +35,16 @@ public class DelegateMASPDPPackagesDirector extends InitializationDirector<Physi
 
 	private static final int PACKAGES_PER_HOUR = 1;
 	private static final long PACKAGE_GENERATOR_SEED = 1290299;
-	private static final int TOTAL_NUMBER_OF_PACKAGES = 2;
+	private static final int TOTAL_NUMBER_OF_PACKAGES = 2000;
 	private Random random;
 	private int numberOfPackages = 0;
 	private long lastTime = 0;
+	private final int maxIdOfNode;
 	
-	public DelegateMASPDPPackagesDirector() {
+	public DelegateMASPDPPackagesDirector(int width) {
 		super(new IntervalTimePattern(Utils.minutesToMicroSeconds(10)));
-		random = new Random(PACKAGE_GENERATOR_SEED);
+		this.maxIdOfNode = width * width;
+		random = new Random();
 //		random = new Random();
 	}
 
@@ -52,7 +54,7 @@ public class DelegateMASPDPPackagesDirector extends InitializationDirector<Physi
 	@Override
 	protected void createAndDeploy() {
 		long currentTime = VirtualClock.currentTime();
-		if(numberOfPackages == 1 && currentTime - lastTime < Utils.minutesToMicroSeconds(300))
+		if(currentTime - lastTime < Utils.minutesToMicroSeconds(60))
 			return;
 		lastTime = currentTime;
 		if(numberOfPackages >= TOTAL_NUMBER_OF_PACKAGES) {
@@ -61,12 +63,14 @@ public class DelegateMASPDPPackagesDirector extends InitializationDirector<Physi
 		
 		int i=0;
 		for(; i<PACKAGES_PER_HOUR; i++) {
-			int id1 = nodesExternalIds[(int)Math.ceil(random.nextDouble() * (nodesExternalIds.length - 1))];
-			int id2 = nodesExternalIds[(int)Math.ceil(random.nextDouble() * (nodesExternalIds.length - 1))];
+//			int id1 = nodesExternalIds[(int)Math.ceil(random.nextDouble() * (nodesExternalIds.length - 1))];
+//			int id2 = nodesExternalIds[(int)Math.ceil(random.nextDouble() * (nodesExternalIds.length - 1))];
 			
-			id1 = 48 - numberOfPackages * 40;
-			id2 = 3 + numberOfPackages * 1;
-			//TODO: wegdoen
+			int id1 = (int) (Math.random() * maxIdOfNode);
+			int id2 = (int) (Math.random() * maxIdOfNode);
+			while(id1 == id2){
+				id2 = (int) (Math.random() * maxIdOfNode);
+			}
 			
 			Crossroads cr1 = getInstructionManager().findSpecificObject(Crossroads.class, id1);
 			Crossroads cr2 = getInstructionManager().findSpecificObject(Crossroads.class, id2);

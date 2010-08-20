@@ -34,8 +34,8 @@ import framework.utils.TimeUtils;
  */
 public abstract class GUI extends JPanel implements EventListener {
 
-	private static final int guiWidth = 800;
-	private static final int guiHeight = 600;
+	private static final int guiWidth = 1200;
+	private static final int guiHeight = 750;
 	private static final long repaintInterval = 100;
 
 	private ContinuousPosition upperLeft = new ContinuousPosition(0L, 0L);

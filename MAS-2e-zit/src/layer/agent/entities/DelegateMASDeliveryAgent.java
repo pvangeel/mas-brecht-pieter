@@ -42,7 +42,7 @@ public class DelegateMASDeliveryAgent extends Agent {
 	public DelegateMASDeliveryAgent() {
 		JFrame jFrame = new JFrame();
 		jFrame.setSize(400, 500);
-		jFrame.setLocation(800, 400);
+		jFrame.setLocation(850, 400);
 		jFrame.setLayout(new GridLayout(2, 1));
 		bovensteText = new JTextArea();
 		ondersteText = new JTextArea();

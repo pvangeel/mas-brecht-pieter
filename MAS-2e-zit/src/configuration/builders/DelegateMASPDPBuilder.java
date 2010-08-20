@@ -64,9 +64,11 @@ public class DelegateMASPDPBuilder extends ExperimentBuilder<PhysicalConnectionS
 //		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> agents = new GradientAgentsInitializationDirector();
 //		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> packages = new GradientPDPPackagesDirector();
 		
-		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> vehicles = new DelegateMASVehiclesInitializationDirector();
-		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> agents = new DelegateMASAgentsInitializationDirector();
-		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> packages = new DelegateMASPDPPackagesDirector();
+		int numberOfAgents = 4;
+		
+		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> vehicles = new DelegateMASVehiclesInitializationDirector(numberOfAgents, width);
+		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> agents = new DelegateMASAgentsInitializationDirector(numberOfAgents);
+		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> packages = new DelegateMASPDPPackagesDirector(width);
 		
 		
 		

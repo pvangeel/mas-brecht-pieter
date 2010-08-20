@@ -21,8 +21,11 @@ import framework.utils.Utils;
 @Deprecated
 public class DelegateMASAgentsInitializationDirector extends InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> {
 
-	public DelegateMASAgentsInitializationDirector() {
+	private final int numberOfAgents;
+
+	public DelegateMASAgentsInitializationDirector(int numberOfAgents) {
 		super(new DelayedTimePattern(11000));
+		this.numberOfAgents = numberOfAgents;
 	}
 
 	/**
@@ -34,12 +37,11 @@ public class DelegateMASAgentsInitializationDirector extends InitializationDirec
 		
 		long currentTime = VirtualClock.currentTime();
 		
-		instructionManager.addInstruction(new CreateDelegateMASDeliveryAgent(currentTime, 1909090909));
-		instructionManager.addInstruction(new DeployAgentInstruction(currentTime, 1909090909, 1));
-		
-//		int delay = 300;
-//		instructionManager.addInstruction(new CreateDelegateMASDeliveryAgent(currentTime + Utils.minutesToMicroSeconds(delay), 1909090908));
-//		instructionManager.addInstruction(new DeployAgentInstruction(currentTime + Utils.minutesToMicroSeconds(delay), 1909090908, 2));
+		for (int i = 0; i < numberOfAgents; i++) {
+			int delay = 0 * i;
+			instructionManager.addInstruction(new CreateDelegateMASDeliveryAgent(currentTime + Utils.minutesToMicroSeconds(delay), i));
+			instructionManager.addInstruction(new DeployAgentInstruction(currentTime + Utils.minutesToMicroSeconds(delay), i, i));
+		}
 
 	}
 
