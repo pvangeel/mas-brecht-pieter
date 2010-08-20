@@ -59,7 +59,7 @@ public class RegularGridDirector
 					
 					getInstructionManager().addInstruction(new CreateTwoWayRoadInstruction(currentTime, roadId));
 					getInstructionManager().addInstruction(new DeployConnectionInstruction<Truck, Crossroads, Road>(currentTime, roadId, id, id+1));
-//					System.out.println("creating road between " + id + " and " + (id + 1) + " with id " +roadId);
+					System.out.println("creating road between " + id + " and " + (id + 1) + " with id " +roadId);
 					
 				}
 				if(x<height-1) {
@@ -67,7 +67,7 @@ public class RegularGridDirector
 					
 					getInstructionManager().addInstruction(new CreateTwoWayRoadInstruction(currentTime, roadId));
 					getInstructionManager().addInstruction(new DeployConnectionInstruction<Truck, Crossroads, Road>(currentTime, roadId,id,id+width));
-//					System.out.println("creating road between " + id + " and " + (id + width) + " with id " +roadId);
+					System.out.println("creating road between " + id + " and " + (id + width) + " with id " +roadId);
 				}
 				
 				

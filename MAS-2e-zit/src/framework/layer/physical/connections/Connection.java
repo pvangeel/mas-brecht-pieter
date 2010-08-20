@@ -81,8 +81,6 @@ public abstract class Connection<E extends ConnectionEntity<E, Ctr, Cnn>, Ctr ex
 	}
 
 	void enterConnection(E connectionEntity, Ctr connector) {
-		// System.out.println("Connection.enterConnection() " +
-		// connectionEntity);
 		Direction directionFromConnector = getDirectionFromConnector(connector);
 		connectionEntity.setConnectionElementPosition(new ConnectionPosition<E, Ctr, Cnn>(this, 0, directionFromConnector));
 		if (directionFromConnector == Direction.TO_CONNECTOR_1) {
@@ -93,7 +91,6 @@ public abstract class Connection<E extends ConnectionEntity<E, Ctr, Cnn>, Ctr ex
 	}
 
 	void leaveConnection(E connectionEntity, Ctr connector, boolean onroad) {
-		// System.out.println("Connection.leaveConnection() "+connectionEntity);
 		Direction directionFromConnector = getDirectionToConnector(connector);
 		connectionEntity.setConnectionElementPosition(new ConnectorPosition<E, Ctr, Cnn>(connector, onroad));
 		if (directionFromConnector == Direction.TO_CONNECTOR_1) {

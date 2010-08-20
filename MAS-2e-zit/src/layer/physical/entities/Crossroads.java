@@ -17,6 +17,10 @@ public class Crossroads extends Connector<Truck, Crossroads, Road> {
 	private static final int ON_ROAD_CAPACITY = 2;
 	private static final int OFF_ROAD_CAPACITY = 1;
 	
+	public String toString(){
+		return "cr" + getId();
+	}
+	
 	public Crossroads() {
 		super(ON_ROAD_CAPACITY, OFF_ROAD_CAPACITY);
 		EventBroker.getEventBroker().notifyAll(new CrossRoadsCreatedEvent(this));

@@ -66,8 +66,8 @@ public class PDPPackage extends Resource<PDPPackage> {
 	private boolean packageAdded = false;
 	private boolean packagedPicked = false;
 	private boolean packageDelivered = false;
-	private boolean action1 = false;
-	private boolean action0 = false;
+//	private boolean action1 = false;
+//	private boolean action0 = false;
 	
 //	private long tLastGFIncrease = 0;
 //	private long lastRadius = Utils.metersToMillimeter(10);
@@ -112,9 +112,10 @@ public class PDPPackage extends Resource<PDPPackage> {
 //			}
 //		}
 		
-		confirmTruck();
-		sendExplorationAnts();
-		
+		if(!packagedPicked){
+			confirmTruck();
+			sendExplorationAnts();
+		}
 //		System.out.println("tick");
 	}
 	
@@ -133,7 +134,8 @@ public class PDPPackage extends Resource<PDPPackage> {
 
 	private void sendExplorationAnts() {
 		if(lastAntsSent + delta < VirtualClock.currentTime()) {   
-			ExplorationAnt ant = new ExplorationAnt(this, currentHops++);
+			ExplorationAnt ant = new ExplorationAnt(this, Math.min(currentHops, maxHOPS));
+			currentHops++;
 			ant.explore(origin);
 			lastAntsSent = VirtualClock.currentTime();
 		}
@@ -176,7 +178,8 @@ public class PDPPackage extends Resource<PDPPackage> {
 	private long lastAntsSent = VirtualClock.currentTime();
 	private long delta = Utils.secondsToMicroSeconds(900);
 	//TODO: evt aanpassen als package gereserveerd is
-	private long currentHops = 1;
+	private int currentHops = 1;
+	private static final int maxHOPS = 6;
 	
 
 	@Override
