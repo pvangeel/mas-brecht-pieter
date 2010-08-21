@@ -41,11 +41,7 @@ public class ExplorationAnt {
 	public void explore(Crossroads from) {
 		if(hopsToDo == 0)
 			return;
-		try {
-			route.addCrossroads(from);
-		} catch (LoopException e) {
-			return;
-		}
+		if(!route.addCrossroads(from)) return;
 
 		exploreCrossRoads(from);
 		exploreOutgoingRoads(from);
