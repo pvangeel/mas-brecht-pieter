@@ -1,8 +1,6 @@
 package layer.agent.entities;
 
 import java.awt.GridLayout;
-import java.util.Collections;
-import java.util.List;
 import java.util.TreeSet;
 
 import javax.swing.JFrame;
@@ -19,12 +17,9 @@ import layer.physical.entities.PDPPackage;
 import layer.physical.entities.Road;
 import layer.physical.entities.Truck;
 
-import org.apache.log4j.Logger;
-
 import framework.core.VirtualClock;
 import framework.layer.agent.Agent;
 import framework.layer.physical.command.move.EnterConnectorCommand;
-import framework.utils.Utils;
 
 /**
  * This agent is meant to show how to issue commands.
@@ -40,11 +35,12 @@ public class DelegateMASDeliveryAgent extends Agent {
 
 	private Truck myTruck;
 	private static final long evaporationMAX = 4000;
-	private long evaporation = evaporationMAX;
+	private long evaporation = 0;
 	private TreeSet<Trajectory> suggestedRoutes = new TreeSet<Trajectory>();
 	private Trajectory currentTrajectory;
 	private JTextArea bovensteText;
 	private JTextArea ondersteText;
+	private JTextArea superondersteText;
 	private boolean onRouteToDestination = false;
 	private AStarRouter router = new AStarRouter.DistanceBasedAStar();
 	
@@ -56,11 +52,13 @@ public class DelegateMASDeliveryAgent extends Agent {
 		JFrame jFrame = new JFrame();
 		jFrame.setSize(400, 500);
 		jFrame.setLocation(850, 400);
-		jFrame.setLayout(new GridLayout(2, 1));
+		jFrame.setLayout(new GridLayout(3, 1));
 		bovensteText = new JTextArea();
 		ondersteText = new JTextArea();
+		superondersteText = new JTextArea();
 		jFrame.add(bovensteText);
 		jFrame.add(ondersteText);
+		jFrame.add(superondersteText);
 		jFrame.setVisible(true);
 	}
 
@@ -98,6 +96,9 @@ public class DelegateMASDeliveryAgent extends Agent {
 		return suggestedRoutes.first().isBetter(currentTrajectory);
 	}
 
+	//TODO nog maken
+	private int timesChangedIntention;
+	
 	private boolean tryToReserveBest() {
 		//hasBetter == true
 		if(currentTrajectory != null){
@@ -121,11 +122,16 @@ public class DelegateMASDeliveryAgent extends Agent {
 	}
 
 	private void decreaseEvaporation() {
+		if(currentTrajectory == null) return;
 		evaporation--;
 		if(evaporation == 0){
 			currentTrajectory = null;
+			nbTimesAfgedanktDoorPakje++;
+			updateVenster();
 		}
 	}
+	
+	private int nbTimesAfgedanktDoorPakje;
 
 	private void drive() {
 		boolean perceiveOnConnector = myTruck.isOnConnector();
@@ -220,6 +226,7 @@ public class DelegateMASDeliveryAgent extends Agent {
 		}else{
 			bovensteText.setText(currentTrajectory.toString());
 		}
+		superondersteText.setText(nbTimesAfgedanktDoorPakje + "");
 	}
 
 	public Trajectory getCurrentRoute() {
