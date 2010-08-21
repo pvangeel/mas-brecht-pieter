@@ -33,7 +33,7 @@ import framework.utils.Utils;
 @Deprecated
 public class DelegateMASPDPPackagesDirector extends InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> {
 
-	private static final int PACKAGES_PER_HOUR = 3;
+	private static final int PACKAGES_PER_HOUR = 1;
 	private static final long PACKAGE_GENERATOR_SEED = 1290299;
 	private static final int TOTAL_NUMBER_OF_PACKAGES = 2000;
 	private Random random;
@@ -54,7 +54,7 @@ public class DelegateMASPDPPackagesDirector extends InitializationDirector<Physi
 	@Override
 	protected void createAndDeploy() {
 		long currentTime = VirtualClock.currentTime();
-		if(currentTime - lastTime < Utils.minutesToMicroSeconds(60))
+		if(currentTime - lastTime < Utils.minutesToMicroSeconds(120))
 			return;
 		lastTime = currentTime;
 		if(numberOfPackages >= TOTAL_NUMBER_OF_PACKAGES) {

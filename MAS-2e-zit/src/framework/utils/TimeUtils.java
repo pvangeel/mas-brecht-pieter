@@ -20,8 +20,11 @@ public class TimeUtils {
 		private final int seconds;
 		private final int milliseconds;
 		private final int microseconds;
+		
+		private final long initialValue;
 
 		public TimeObject(long microsec) {
+			this.initialValue = microsec;
 			days = (int) (microsec / daymicrosecs);
 			hours = (int) ((microsec % daymicrosecs) / hourmicrosecs);
 			minutes = (int) ((microsec % hourmicrosecs) / minutemicrosecs);
@@ -58,6 +61,18 @@ public class TimeUtils {
 		public String toString() {
 			return getDays() + " days, " + getHours() + " hours, " + getMinutes() + " minutes, " + getSeconds()
 					+ " seconds, " + getMilliseconds() + " milliseconds, " + getMicroseconds() + " microseconds";
+		}
+		
+		public long getInitialValue(){
+			return initialValue;
+		}
+		
+		public int hoursDifference(TimeObject other){
+			if(initialValue > other.getInitialValue()){
+				return new TimeObject(initialValue - other.getInitialValue()).getHours();
+			}else{
+				return -1 * new TimeObject(other.getInitialValue() - initialValue).getHours();
+			}
 		}
 
 	}

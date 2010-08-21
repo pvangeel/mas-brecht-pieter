@@ -1,5 +1,12 @@
 package layer.physical.entities;
 
+import java.awt.GridLayout;
+
+import javax.swing.JFrame;
+import javax.swing.JTextArea;
+
+import com.sun.org.apache.bcel.internal.generic.NEW;
+
 import ants.ExplorationAnt;
 
 import layer.agent.entities.DelegateMASDeliveryAgent;
@@ -8,6 +15,7 @@ import framework.core.VirtualClock;
 import framework.layer.physical.command.Command;
 import framework.layer.physical.entities.Resource;
 import framework.layer.physical.position.Position;
+import framework.utils.TimeUtils.TimeObject;
 import framework.utils.Utils;
 
 /**
@@ -34,12 +42,32 @@ public class PDPPackage extends Resource<PDPPackage> {
 	private static final int maxHOPS = 20;
 	private int nbAnts = 20;
 	private final long timeCreated = VirtualClock.currentTime();
+	private static int nbPackagesHour;
 
 	public PDPPackage(int id, Crossroads origin, Crossroads destination, double weight) {
 		this.id = id;
 		this.origin = origin;
 		this.destination = destination;
 		this.weight = weight;
+		createWindow();
+	}
+	
+	private static boolean windowCreated = false;
+	private static JTextArea linkseText;
+	private static JTextArea rechtseText;
+	
+	private static void createWindow(){
+		if(windowCreated) return;
+		JFrame jFrame = new JFrame();
+		jFrame.setSize(400, 500);
+		jFrame.setLocation(850, 400);
+		jFrame.setLayout(new GridLayout(1, 2));
+		linkseText = new JTextArea();
+		rechtseText = new JTextArea();
+		jFrame.add(linkseText);
+		jFrame.add(rechtseText);
+		jFrame.setVisible(true);
+		windowCreated = true;
 	}
 	
 	public Crossroads getDestination() {
@@ -65,7 +93,19 @@ public class PDPPackage extends Resource<PDPPackage> {
 	private boolean packagePicked = false;
 	
 	public void packagePicked() {
+		nbPackagesHour++;
+		linkseText.append(VirtualClock.currentTime() - timeCreated + "\n");
 		packagePicked = true;
+	}
+	
+	private static TimeObject statTime = new TimeObject(0);
+	public static final boolean packagesPerHourStats = false;
+	
+	public static void writeStats(){
+		if(rechtseText == null) return;
+		rechtseText.append("Hour" + statTime.getHours() + "-" + VirtualClock.getClock().getTimeObject().getHours() + ":" + nbPackagesHour + "\n");
+		statTime = VirtualClock.getClock().getTimeObject();
+		nbPackagesHour = 0;
 	}
 	
 	@Override

@@ -1,5 +1,7 @@
 package framework.core;
 
+import layer.physical.entities.PDPPackage;
+import framework.utils.TimeUtils;
 import framework.utils.TimeUtils.TimeObject;
 
 /**
@@ -30,11 +32,18 @@ public class VirtualClock {
 	 * microseconds
 	 */
 	public void increaseTime(int increase) {
-		if (increase <= 0) {
-			throw new IllegalArgumentException("increase must be strictly positive");
+		if (increase <= 0) throw new IllegalArgumentException("increase must be strictly positive");
+
+		if(PDPPackage.packagesPerHourStats){
+			if((((microseconds - lastHours) % TimeObject.daymicrosecs) / TimeObject.hourmicrosecs) >= 3){
+				PDPPackage.writeStats();
+				lastHours = microseconds;
+			}
 		}
 		microseconds += increase;
 	}
+
+	private long lastHours = 0;
 
 	/**
 	 * Retrieve the singleton instance of the virtual clock
@@ -45,7 +54,7 @@ public class VirtualClock {
 		}
 		return clock;
 	}
-	
+
 	/**
 	 * Retrieves the current time from the virtual clock
 	 */
