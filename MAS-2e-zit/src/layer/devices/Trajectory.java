@@ -26,6 +26,10 @@ public class Trajectory implements Comparable<Trajectory> {
 		this(pdpPackage);
 		crossroads = (LinkedList<Crossroads>) route.crossroads.clone();
 	}
+	
+	public Trajectory(Trajectory route){
+		this(route, route.getPdpPackage());
+	}
 
 	public Trajectory(PDPPackage pdpPackage) {
 		this.pdpPackage = pdpPackage;
@@ -44,7 +48,7 @@ public class Trajectory implements Comparable<Trajectory> {
 	}
 
 	public String toString() {
-		String ret = "";
+		String ret = "T:";
 		if(crossroads == null)
 			return ret;
 		

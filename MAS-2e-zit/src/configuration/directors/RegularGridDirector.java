@@ -15,6 +15,7 @@ import framework.initialization.startup.StartupTimePattern;
 import framework.instructions.deployment.DeployConnectionInstruction;
 import framework.instructions.deployment.DeployConnectorInstruction;
 import framework.layer.physical.PhysicalConnectionStructure;
+import framework.layer.physical.PhysicalLayer;
 import framework.utils.IdGenerator;
 
 public class RegularGridDirector
@@ -27,11 +28,10 @@ public class RegularGridDirector
 	private long startX = 6694935603L;
 	private long startY = 4002925795L;
 	private long interval = 300000L;
+	private PhysicalLayer<PhysicalConnectionStructure<Truck, Crossroads, Road>> physicalLayer;
 	
 
-	public RegularGridDirector(
-			TimePattern timePattern,
-			SpatialPattern<PhysicalConnectionStructure<Truck, Crossroads, Road>, ?> spatialPattern) {
+	public RegularGridDirector(TimePattern timePattern, 	SpatialPattern<PhysicalConnectionStructure<Truck, Crossroads, Road>, ?> spatialPattern) {
 		super(timePattern, spatialPattern);
 		// TODO Auto-generated constructor stub
 	}
@@ -41,6 +41,11 @@ public class RegularGridDirector
 		this.width = width;
 		this.height = width;
 
+	}
+
+	public RegularGridDirector(int width, PhysicalLayer<PhysicalConnectionStructure<Truck, Crossroads, Road>> physicalLayer) {
+		this(width);
+		this.physicalLayer = physicalLayer;
 	}
 
 	@Override
@@ -86,7 +91,7 @@ public class RegularGridDirector
 				//int nextId = IdGenerator.getIdGenerator().getNextId(Crossroads.class);
 				int nextId = baseID + x*width +y;
 //				System.out.println("next id: " + nextId);
-				getInstructionManager().addInstruction(new CreateCrossroadsInstruction(currentTime, nextId));
+				getInstructionManager().addInstruction(new CreateCrossroadsInstruction(physicalLayer, currentTime, nextId));
 				getInstructionManager().addInstruction(
 						new DeployConnectorInstruction<Truck, Crossroads, Road>(
 								currentTime, 

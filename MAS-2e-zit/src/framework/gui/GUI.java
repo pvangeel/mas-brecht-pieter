@@ -93,7 +93,7 @@ public abstract class GUI extends JPanel implements EventListener {
 
 		instructionsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		instructionsFrame.getContentPane().add(createInstructionsPanel());
-		instructionsFrame.setBounds(guiWidth, 0, 200, 120);
+		instructionsFrame.setBounds(guiWidth + 100, 0, 200, 120);
 		instructionsFrame.setVisible(true);
 
 	}

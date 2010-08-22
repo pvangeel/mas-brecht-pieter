@@ -27,6 +27,7 @@ public class DelegateMASPDPBuilder extends ExperimentBuilder<PhysicalConnectionS
 	
 	private boolean regularGrid = false;
 	private final int numberOfAgents;
+	private PhysicalLayer<PhysicalConnectionStructure<Truck, Crossroads, Road>> physicalLayer;
 
 	public DelegateMASPDPBuilder(File osmMapFile, int numberOfAgents) {
 		this.numberOfAgents = numberOfAgents;
@@ -56,7 +57,7 @@ public class DelegateMASPDPBuilder extends ExperimentBuilder<PhysicalConnectionS
 		
 		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> roadInfrastructure;
 		if(regularGrid) {
-			roadInfrastructure = new RegularGridDirector(width);
+			roadInfrastructure = new RegularGridDirector(width, physicalLayer);
 		} else {
 			roadInfrastructure = new OSMDirector(osmMapFile);
 		}
@@ -90,8 +91,9 @@ public class DelegateMASPDPBuilder extends ExperimentBuilder<PhysicalConnectionS
 
 	@Override
 	public PhysicalLayer<PhysicalConnectionStructure<Truck, Crossroads, Road>> getPhysicalcalLayer() {
-		return new PhysicalLayer<PhysicalConnectionStructure<Truck, Crossroads, Road>>(
+		physicalLayer = new PhysicalLayer<PhysicalConnectionStructure<Truck, Crossroads, Road>>(
 				new PhysicalConnectionStructure<Truck, Crossroads, Road>());
+		return physicalLayer;
 	}
 
 	@Override

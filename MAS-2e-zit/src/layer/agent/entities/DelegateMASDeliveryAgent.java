@@ -36,7 +36,6 @@ public class DelegateMASDeliveryAgent extends Agent {
 	private Truck myTruck;
 	private static final long evaporationMAX = 4000;
 	private long evaporation = 0;
-	private TreeSet<Trajectory> suggestedRoutes = new TreeSet<Trajectory>();
 	private Trajectory currentTrajectory;
 	private JTextArea bovensteText;
 	private JTextArea ondersteText;
@@ -45,11 +44,11 @@ public class DelegateMASDeliveryAgent extends Agent {
 	private AStarRouter router = new AStarRouter.DistanceBasedAStar();
 	
 	
-	private boolean withVisuals = true;
+	private boolean withVisuals = false;
 
 	public DelegateMASDeliveryAgent() {
 		if(!withVisuals) return;
-		JFrame jFrame = new JFrame();
+		JFrame jFrame = new JFrame("VehicleAgent");
 		jFrame.setSize(400, 500);
 		jFrame.setLocation(850, 400);
 		jFrame.setLayout(new GridLayout(3, 1));
@@ -72,24 +71,26 @@ public class DelegateMASDeliveryAgent extends Agent {
 		if(myTruck == null) myTruck = (Truck) getDevice().getPhysicalEntity();
 		
 		checkForBetterRoute();
-		suggestedRoutes.clear();
 		drive();
-		//		updateVenster();
+		updateVenster();
 	}
 
 	private void checkForBetterRoute() {
 		if(onRouteToDestination) return;
+		if(!myTruck.isOnConnector()) return;
 
-		boolean hasBetter = hasBetterRoute();
+		TreeSet<Trajectory> suggestedRoutes = myTruck.getConnectorPosition().getConnector().getSuggestedRoutes();
+		
+		boolean hasBetter = hasBetterRoute(suggestedRoutes);
 
-		if(hasBetter && tryToReserveBest()){
+		if(hasBetter && tryToReserveBest(suggestedRoutes)){
 			restoreEvaporation();
 		}
 
 		decreaseEvaporation();
 	}
 
-	private boolean hasBetterRoute() {
+	private boolean hasBetterRoute(TreeSet<Trajectory> suggestedRoutes) {
 		if(suggestedRoutes.size() == 0) return false;
 		if(currentTrajectory == null) return true;
 
@@ -99,7 +100,7 @@ public class DelegateMASDeliveryAgent extends Agent {
 	//TODO nog maken
 	private int timesChangedIntention;
 	
-	private boolean tryToReserveBest() {
+	private boolean tryToReserveBest(TreeSet<Trajectory> suggestedRoutes) {
 		//hasBetter == true
 		if(currentTrajectory != null){
 			//remove trajectories that are worse
@@ -107,9 +108,10 @@ public class DelegateMASDeliveryAgent extends Agent {
 				suggestedRoutes.pollLast();
 			}
 		}
+		
 		while(!suggestedRoutes.isEmpty()){
 			if(suggestedRoutes.first().getPdpPackage().reserve(this, suggestedRoutes.first())){
-				currentTrajectory = suggestedRoutes.first();
+				currentTrajectory = new Trajectory(suggestedRoutes.first());
 				return true;
 			}
 			suggestedRoutes.pollFirst();
@@ -180,6 +182,10 @@ public class DelegateMASDeliveryAgent extends Agent {
 		if(onRouteToDestination){
 			dropPackage();
 		}else{
+			if(!myTruck.getConnectorPosition().getConnector().hasPackage()) { //Dit kan voorvallen als een truck een route heeft opgepikt die moest ge-evaporate worden
+				currentTrajectory = null;
+				return true; 
+			}
 			pickPackage();
 		}
 		
@@ -210,17 +216,17 @@ public class DelegateMASDeliveryAgent extends Agent {
 		return false;
 	}
 
-	public void suggestRoute(Trajectory route) {
-		suggestedRoutes.add(route);
-		updateVenster();
-	}
+//	public void suggestRoute(Trajectory route) {
+//		suggestedRoutes.add(route);
+//		updateVenster();
+//	}
 
 	private void updateVenster() {
 		if(!withVisuals) return;
 		ondersteText.setText("");
-		for (Trajectory traj : suggestedRoutes) {
-			ondersteText.append(traj.toString() + "\n");
-		}
+//		for (Trajectory traj : suggestedRoutes) {
+//			ondersteText.append(traj.toString() + "\n");
+//		}
 		if(currentTrajectory == null){
 			bovensteText.setText("geen route");
 		}else{

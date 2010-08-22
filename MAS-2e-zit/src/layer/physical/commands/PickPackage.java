@@ -25,8 +25,11 @@ public class PickPackage extends Command<Truck>{
 		logger.debug("Executing PickPackage");
 		
 		if( getEntity().isOnConnector() ){
-			if(getEntity().getConnectorPosition().getConnector().hasPackage())
+			if(getEntity().getConnectorPosition().getConnector().hasPackage()){
 				getEntity().load();
+			}else{
+				throw new IllegalArgumentException();
+			}
 			
 //			try {
 //				StorageCapability storage = getEntity().getAttachedDevices().iterator().next().getStorageCapability();

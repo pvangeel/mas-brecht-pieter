@@ -32,15 +32,15 @@ public class PDPPackage extends Resource<PDPPackage> {
 	private int id;
 	
 	private long packagePriority = 0;
-	private int timesSentAnts = 0;
-	private int tresholdToIncreasePriority = 500;
+	private long lastPriorityIncreased = 0;
+	private long tresholdToIncreasePriority = Utils.minutesToMicroSeconds(60 * 12);
 	
 	private long lastAntsSent = 0; //VirtualClock.currentTime();
-	private long delta = Utils.minutesToMicroSeconds(1);
+	private long tresholdToSendNextAnts = Utils.minutesToMicroSeconds(10);
 	//TODO: evt aanpassen als package gereserveerd is
-	private int currentHops = 20;
-	private static final int maxHOPS = 20;
-	private int nbAnts = 20;
+	private int nbHops = 20;
+	private int nbAnts = 10;
+	
 	private final long timeCreated = VirtualClock.currentTime();
 	private static int nbPackagesHour;
 
@@ -58,7 +58,7 @@ public class PDPPackage extends Resource<PDPPackage> {
 	
 	private static void createWindow(){
 		if(windowCreated) return;
-		JFrame jFrame = new JFrame();
+		JFrame jFrame = new JFrame("Packages");
 		jFrame.setSize(400, 500);
 		jFrame.setLocation(850, 400);
 		jFrame.setLayout(new GridLayout(1, 2));
@@ -96,6 +96,10 @@ public class PDPPackage extends Resource<PDPPackage> {
 		nbPackagesHour++;
 		linkseText.append(VirtualClock.currentTime() - timeCreated + "\n");
 		packagePicked = true;
+	}
+	
+	public boolean isPackagePicked(){
+		return packagePicked;
 	}
 	
 	private static TimeObject statTime = new TimeObject(0);
@@ -164,15 +168,18 @@ public class PDPPackage extends Resource<PDPPackage> {
 	}
 
 	private void sendExplorationAnts() {
-		if(lastAntsSent + delta < VirtualClock.currentTime()) {
+		if(VirtualClock.currentTime() - lastAntsSent > tresholdToSendNextAnts) {
 			for (int i = 0; i < nbAnts; i++) {
-				ExplorationAnt ant = new ExplorationAnt(this, Math.min(currentHops, maxHOPS));
+				ExplorationAnt ant = new ExplorationAnt(this, nbHops);
 				ant.explore(origin);
 				//TODO: dubbels vermijden?
 			}
-			currentHops++;
-			timesSentAnts++;
-			if(timesSentAnts % tresholdToIncreasePriority == 0) packagePriority++;
+			
+			if(VirtualClock.currentTime() - lastPriorityIncreased > tresholdToIncreasePriority) {
+				packagePriority++;
+				lastPriorityIncreased = VirtualClock.currentTime();
+			}
+			
 			lastAntsSent = VirtualClock.currentTime();
 		}
 	}
