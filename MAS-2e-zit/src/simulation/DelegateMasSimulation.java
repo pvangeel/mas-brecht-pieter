@@ -18,8 +18,8 @@ public class DelegateMasSimulation {
 	 */
 	public static void main(String[] args) {
 		
-		int numberOfLinesInGrid = 7;
-		int numberOfAgents = 2;
+		int numberOfLinesInGrid = 10;
+		int numberOfAgents = 3;
 		
 		
 		new SimpleGUI(numberOfLinesInGrid);

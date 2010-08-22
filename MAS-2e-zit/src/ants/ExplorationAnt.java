@@ -44,29 +44,35 @@ public class ExplorationAnt {
 		if(!route.addCrossroads(from)) return;
 
 		exploreCrossRoads(from);
-		exploreOutgoingRoads(from);
+		sendAntToNextHop(from);
 
 	}
 
-	private void exploreOutgoingRoads(Crossroads from) {
+	private void sendAntToNextHop(Crossroads from) {
 		Set<Road> outgoingConnections = new HashSet<Road>(from.getOutgoingConnections());
 		
 		removeRoadWhereCameFrom(outgoingConnections, from);
 		
-		int randomRoad = (int) Math.floor(outgoingConnections.size() * Math.random());
-		Road road = outgoingConnections.toArray(new Road[outgoingConnections.size()])[randomRoad];
+		Crossroads otherConnector = chooseNextCrossroadsRandom(from, outgoingConnections);
 		
-		Set<Truck> trucksOnRoad = getTrucksOnRoad(road);
-		Crossroads otherConnector = road.getOtherConnector(from);
+//		Set<Truck> trucksOnRoad = getTrucksOnRoad(road);
 
-		for (Truck truck : trucksOnRoad) {
-			DelegateMASDeliveryAgent vehicleAgent = extractAgent(truck);
-			//				System.out.println("onRoad:"+road.getId());
-			vehicleAgent.suggestRoute(route);
-		}
+//		for (Truck truck : trucksOnRoad) {
+//			DelegateMASDeliveryAgent vehicleAgent = extractAgent(truck);
+//			//				System.out.println("onRoad:"+road.getId());
+//			vehicleAgent.suggestRoute(route);
+//		}
 		
 		hopsToDo = hopsToDo - 1;
 		new ExplorationAnt(pdpPackage, hopsToDo, route).explore(otherConnector);
+	}
+
+	private Crossroads chooseNextCrossroadsRandom(Crossroads from,
+			Set<Road> outgoingConnections) {
+		int randomRoad = (int) Math.floor(outgoingConnections.size() * Math.random());
+		Road road = outgoingConnections.toArray(new Road[outgoingConnections.size()])[randomRoad];
+		Crossroads otherConnector = road.getOtherConnector(from);
+		return otherConnector;
 	}
 
 	private void removeRoadWhereCameFrom(Set<Road> outgoingConnections, Crossroads from) {
@@ -82,24 +88,15 @@ public class ExplorationAnt {
 	}
 
 	private void exploreCrossRoads(Crossroads from) {
-		LinkedList<Truck> trucksOnCrossroads = from.getOnroadEntities();
-		trucksOnCrossroads.addAll(from.getOffroadEntities());
-
-		if(trucksOnCrossroads.size() > 0) {
-			for (Truck truck : trucksOnCrossroads) {
-				DelegateMASDeliveryAgent vehicleAgent = extractAgent(truck);
-				//				System.out.println("onCrossroad:"+from.getId());
-				vehicleAgent.suggestRoute(route);
-			}
-		}
+		from.suggestRoute(route);
 	}
 
-	private Set<Truck> getTrucksOnRoad(Road road) {
-		Set<Truck> trucks = new HashSet<Truck>();
-		trucks.addAll(road.getEntitiesTo1());
-		trucks.addAll(road.getEntitiesTo2());
-
-		return trucks;
-	}
+//	private Set<Truck> getTrucksOnRoad(Road road) {
+//		Set<Truck> trucks = new HashSet<Truck>();
+//		trucks.addAll(road.getEntitiesTo1());
+//		trucks.addAll(road.getEntitiesTo2());
+//
+//		return trucks;
+//	}
 
 }

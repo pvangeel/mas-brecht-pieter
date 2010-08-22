@@ -54,6 +54,7 @@ public class PhysicalConnectionStructure<E extends ConnectionEntity<E, Ctr, Cnn>
 		}
 		connector.setPosition(position);
 		connectors.add(connector);
+		
 		EventBroker.getEventBroker().notifyAll(new ConnectorAddedEvent(connector, position));
 	}
 

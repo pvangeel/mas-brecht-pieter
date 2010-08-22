@@ -1,19 +1,31 @@
 package layer.physical.entities;
 
 
+import java.awt.GridLayout;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeSet;
+
+import javax.swing.JFrame;
+import javax.swing.JTextArea;
+
+import layer.devices.EvaporationTrajectory;
+import layer.devices.Trajectory;
 import layer.physical.events.CrossRoadsCreatedEvent;
 import layer.physical.events.PackageCreatedEvent;
 import layer.physical.events.PackageDeliveredEvent;
 import layer.physical.events.PackagePickedEvent;
 import environment.Environment;
 import framework.events.EventBroker;
+import framework.layer.TickListener;
 import framework.layer.physical.connections.Connector;
 import framework.layer.physical.position.ConnectorPosition;
 
-public class Crossroads extends Connector<Truck, Crossroads, Road> {
+public class Crossroads extends Connector<Truck, Crossroads, Road> implements TickListener {
 
 	private String flag;
 	private PDPPackage pdpPackage;
+	private JTextArea bovensteText;
 	private static final int ON_ROAD_CAPACITY = 2;
 	private static final int OFF_ROAD_CAPACITY = 1;
 	
@@ -24,6 +36,17 @@ public class Crossroads extends Connector<Truck, Crossroads, Road> {
 	public Crossroads() {
 		super(ON_ROAD_CAPACITY, OFF_ROAD_CAPACITY);
 		EventBroker.getEventBroker().notifyAll(new CrossRoadsCreatedEvent(this));
+//		createIndividualWindow();
+	}
+	
+	private void createIndividualWindow() {
+		JFrame jFrame = new JFrame("Crossroads: " + getId());
+		jFrame.setSize(250, 100);
+		jFrame.setLocation(850, 400);
+		jFrame.setLayout(new GridLayout(1, 1));
+		bovensteText = new JTextArea();
+		jFrame.add(bovensteText);
+		jFrame.setVisible(true);
 	}
 
 	@Override
@@ -131,6 +154,64 @@ public class Crossroads extends Connector<Truck, Crossroads, Road> {
 		EventBroker.getEventBroker().notifyAll(new PackageCreatedEvent(p, this.getPosition()));
 //		p.packageAdded();
 	}
-
 	
+	private void surrogateTick(){
+		List<Trajectory> list = new ArrayList<Trajectory>();
+		for (Trajectory trajectory : suggestedRoutes) {
+			if(((EvaporationTrajectory) trajectory).evaporate()) list.add(trajectory);
+//			if(trajectory.getPdpPackage().isPackagePicked()) list.add(trajectory);
+		}
+		for (Trajectory trajectory : list) {
+			suggestedRoutes.remove(trajectory);
+		}
+		updateVenster();
+	}
+
+	private void updateVenster() {
+//		bovensteText.setText("");
+//		for (Trajectory trajectory : suggestedRoutes) {
+//			bovensteText.append(trajectory + "\n");
+//		}
+	}
+
+	public void suggestRoute(Trajectory route) {
+		Trajectory trajectory = getPathWithSameDestination(route);
+		if(trajectory == null){
+			addRouteToSuggestedRoutes(route);
+		}else{
+			if(route.isBetter(trajectory)){
+				suggestedRoutes.remove(trajectory);
+				addRouteToSuggestedRoutes(route);
+			}else{
+				((EvaporationTrajectory) trajectory).restoreEvaporation();
+			}
+		}
+	}
+
+	private void addRouteToSuggestedRoutes(Trajectory route) {
+		suggestedRoutes.add(new EvaporationTrajectory(route));
+		updateVenster();
+	}
+
+	private Trajectory getPathWithSameDestination(Trajectory route) {
+		for (Trajectory trajectory : suggestedRoutes) {
+			if(trajectory.getPdpPackage() == route.getPdpPackage()){
+				return trajectory;
+			}
+		}
+		return null;
+	}
+
+	private TreeSet<Trajectory> suggestedRoutes = new TreeSet<Trajectory>();
+
+	public TreeSet<Trajectory> getSuggestedRoutes() {
+		return (TreeSet<Trajectory>) suggestedRoutes.clone();
+	}
+
+	@Override
+	public void processTick(long timePassed) {
+		//evt niet elke keer
+		surrogateTick();
+	}
+
 }
