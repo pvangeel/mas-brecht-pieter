@@ -32,14 +32,14 @@ public class PDPPackage extends Resource<PDPPackage> {
 	private int id;
 	
 	private long packagePriority = 0;
-	private long lastPriorityIncreased = 0;
+	private long lastPriorityIncreased = VirtualClock.currentTime();
 	private long tresholdToIncreasePriority = Utils.minutesToMicroSeconds(60 * 12);
 	
 	private long lastAntsSent = 0; //VirtualClock.currentTime();
-	private long tresholdToSendNextAnts = Utils.minutesToMicroSeconds(10);
+	private long tresholdToSendNextAnts = Utils.minutesToMicroSeconds(1);
 	//TODO: evt aanpassen als package gereserveerd is
 	private int nbHops = 20;
-	private int nbAnts = 10;
+	private int nbAnts = 1;
 	
 	private final long timeCreated = VirtualClock.currentTime();
 	private static int nbPackagesHour;
@@ -130,19 +130,17 @@ public class PDPPackage extends Resource<PDPPackage> {
 	}
 	
 	private DelegateMASDeliveryAgent currentTruck;
-	private Trajectory currentRouteToThis;
 
 	
 	
 	public boolean reserve(DelegateMASDeliveryAgent truckAgent, Trajectory route){
+		if(isPackagePicked()) return false;
 		if(currentTruck == null){
 			currentTruck = truckAgent;
-			currentRouteToThis = route;
 			return true;
 		}else{
 			if(better(route)){
 				currentTruck = truckAgent;
-				currentRouteToThis = route;
 				return true;
 			}else
 				return false;
@@ -157,10 +155,9 @@ public class PDPPackage extends Resource<PDPPackage> {
 		 * Als de truck die onderweg is naar dit pakje ondertussen een beter pakje heeft gevonden maar nog steeds
 		 * in deze package geregistreerd staat als currentTruck (confirmTruck is nog niet gebeurd, gebeurt bij volgende tick)
 		 */
-		if(routeFromCurrentTruck != currentRouteToThis)
-			return true;
+		if(!currentTruck.onRouteTo(this)) return true;
 		
-		return newRoute.isBetter(currentRouteToThis);
+		return newRoute.isBetter(currentTruck.getCurrentRoute());
 	}
 
 	public long getPackagePriority(){
