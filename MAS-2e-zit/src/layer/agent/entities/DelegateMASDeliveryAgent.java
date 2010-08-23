@@ -20,6 +20,7 @@ import layer.physical.entities.Truck;
 import framework.core.VirtualClock;
 import framework.layer.agent.Agent;
 import framework.layer.physical.command.move.EnterConnectorCommand;
+import framework.utils.Utils;
 
 /**
  * This agent is meant to show how to issue commands.
@@ -34,8 +35,8 @@ import framework.layer.physical.command.move.EnterConnectorCommand;
 public class DelegateMASDeliveryAgent extends Agent {
 
 	private Truck myTruck;
-	private static final long evaporationMAX = 4000;
-	private long evaporation = 0;
+	private static final long evaporationDelta = Utils.minutesToMicroSeconds(10);
+	private long evaporationStart = 0;
 	private Trajectory currentTrajectory;
 	private JTextArea bovensteText;
 	private JTextArea ondersteText;
@@ -71,6 +72,7 @@ public class DelegateMASDeliveryAgent extends Agent {
 		if(myTruck == null) myTruck = (Truck) getDevice().getPhysicalEntity();
 		
 		checkForBetterRoute();
+		checkEvaporation();
 		drive();
 		updateVenster();
 	}
@@ -86,8 +88,6 @@ public class DelegateMASDeliveryAgent extends Agent {
 		if(hasBetter && tryToReserveBest(suggestedRoutes)){
 			restoreEvaporation();
 		}
-
-		decreaseEvaporation();
 	}
 
 	private boolean hasBetterRoute(TreeSet<Trajectory> suggestedRoutes) {
@@ -120,13 +120,13 @@ public class DelegateMASDeliveryAgent extends Agent {
 	}
 
 	private void restoreEvaporation() {
-		evaporation = evaporationMAX;
+		evaporationStart = VirtualClock.currentTime();
 	}
 
-	private void decreaseEvaporation() {
+	private void checkEvaporation() {
+		if(onRouteToDestination) return;
 		if(currentTrajectory == null) return;
-		evaporation--;
-		if(evaporation == 0){
+		if(VirtualClock.currentTime() - evaporationStart > evaporationDelta){
 			currentTrajectory = null;
 			nbTimesAfgedanktDoorPakje++;
 			updateVenster();
@@ -141,11 +141,11 @@ public class DelegateMASDeliveryAgent extends Agent {
 		boolean allCommandsProcessed = myTruck.allCommandsProcessed();
 
 		if(!allCommandsProcessed) return;
-		if(currentTrajectory == null) return;
-
-		if(perceiveOnConnector) handleCrossroads();
-
+		
 		if(perceiveOnConnection) handleRoad();
+		
+		if(currentTrajectory == null) return;
+		if(perceiveOnConnector) handleCrossroads();
 	}
 
 	private void handleRoad() {
@@ -184,11 +184,10 @@ public class DelegateMASDeliveryAgent extends Agent {
 		}else{
 			if(!myTruck.getConnectorPosition().getConnector().hasPackage()) { //Dit kan voorvallen als een truck een route heeft opgepikt die moest ge-evaporate worden
 				currentTrajectory = null;
-				return true; 
+			}else{
+				pickPackage();
 			}
-			pickPackage();
 		}
-		
 		return true;
 	}
 
@@ -224,9 +223,7 @@ public class DelegateMASDeliveryAgent extends Agent {
 	private void updateVenster() {
 		if(!withVisuals) return;
 		ondersteText.setText("");
-//		for (Trajectory traj : suggestedRoutes) {
-//			ondersteText.append(traj.toString() + "\n");
-//		}
+		ondersteText.setText(  evaporationDelta - (VirtualClock.currentTime() - evaporationStart) + "");
 		if(currentTrajectory == null){
 			bovensteText.setText("geen route");
 		}else{
@@ -238,5 +235,10 @@ public class DelegateMASDeliveryAgent extends Agent {
 	public Trajectory getCurrentRoute() {
 		return currentTrajectory;
 		//TODO: check verschillende tijdslijnen
+	}
+
+	public boolean onRouteTo(PDPPackage pdpPackage) {
+		if(currentTrajectory == null) return false;
+		return currentTrajectory.getPdpPackage() == pdpPackage;
 	}
 }

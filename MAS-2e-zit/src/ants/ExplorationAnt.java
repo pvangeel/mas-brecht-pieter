@@ -32,20 +32,19 @@ public class ExplorationAnt {
 		this.route = new Trajectory(route, pdpPackage);
 	}
 
-	private DelegateMASDeliveryAgent extractAgent(Truck truck){
-		Set<Agent> agents = truck.getAgentsOnAttachDevices();
-		DelegateMASDeliveryAgent vehicleAgent = (DelegateMASDeliveryAgent) agents.iterator().next();
-		return vehicleAgent;
-	}
+//	private DelegateMASDeliveryAgent extractAgent(Truck truck){
+//		Set<Agent> agents = truck.getAgentsOnAttachDevices();
+//		DelegateMASDeliveryAgent vehicleAgent = (DelegateMASDeliveryAgent) agents.iterator().next();
+//		return vehicleAgent;
+//	}
 
-	public void explore(Crossroads from) {
-		if(hopsToDo == 0)
-			return;
-		if(!route.addCrossroads(from)) return;
+	public boolean explore(Crossroads from) {
+		if(hopsToDo == 0) return true;
+		if(!route.addCrossroads(from)) return false;
 
 		exploreCrossRoads(from);
 		sendAntToNextHop(from);
-
+		return true;
 	}
 
 	private void sendAntToNextHop(Crossroads from) {
@@ -53,7 +52,7 @@ public class ExplorationAnt {
 		
 		removeRoadWhereCameFrom(outgoingConnections, from);
 		
-		Crossroads otherConnector = chooseNextCrossroadsRandom(from, outgoingConnections);
+		Crossroads otherConnector = chooseNextCrossroadsRandomAndRemoveRoad(from, outgoingConnections);
 		
 //		Set<Truck> trucksOnRoad = getTrucksOnRoad(road);
 
@@ -64,14 +63,20 @@ public class ExplorationAnt {
 //		}
 		
 		hopsToDo = hopsToDo - 1;
-		new ExplorationAnt(pdpPackage, hopsToDo, route).explore(otherConnector);
+		
+		boolean explorationSucceeded = new ExplorationAnt(pdpPackage, hopsToDo, route).explore(otherConnector);
+		
+		while(!explorationSucceeded && !outgoingConnections.isEmpty()){
+			otherConnector = chooseNextCrossroadsRandomAndRemoveRoad(from, outgoingConnections);
+			explorationSucceeded = new ExplorationAnt(pdpPackage, hopsToDo, route).explore(otherConnector);
+		}
 	}
 
-	private Crossroads chooseNextCrossroadsRandom(Crossroads from,
-			Set<Road> outgoingConnections) {
+	private Crossroads chooseNextCrossroadsRandomAndRemoveRoad(Crossroads from, Set<Road> outgoingConnections) {
 		int randomRoad = (int) Math.floor(outgoingConnections.size() * Math.random());
 		Road road = outgoingConnections.toArray(new Road[outgoingConnections.size()])[randomRoad];
 		Crossroads otherConnector = road.getOtherConnector(from);
+		outgoingConnections.remove(road);
 		return otherConnector;
 	}
 

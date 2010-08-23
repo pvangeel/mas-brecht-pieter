@@ -3,8 +3,6 @@ package layer.devices;
 import java.util.LinkedList;
 import java.util.List;
 
-import ants.LoopException;
-
 import layer.physical.entities.Crossroads;
 import layer.physical.entities.PDPPackage;
 

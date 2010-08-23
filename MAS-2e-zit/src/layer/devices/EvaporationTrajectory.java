@@ -1,27 +1,28 @@
 package layer.devices;
 
+import framework.core.VirtualClock;
+import framework.utils.Utils;
+
 public class EvaporationTrajectory extends Trajectory {
 	
-	private static final long evaporationMAX = 2000;
-	private long evaporation = evaporationMAX;
+	private static final long evaporationDelta = Utils.minutesToMicroSeconds(20);
+	private long evaporationStart = VirtualClock.currentTime();
 	
 	public EvaporationTrajectory(Trajectory trajectory){
 		super(trajectory);
 	}
 
 	public boolean evaporate() {
-		evaporation--;
-		if(evaporation <= 0) return true;
-		return false;
+		return VirtualClock.currentTime() - evaporationStart > evaporationDelta;
 	}
 
 	public void restoreEvaporation() {
-		evaporation = evaporationMAX;
+		evaporationStart = VirtualClock.currentTime();
 	}
 	
 	@Override
 	public String toString() {
-		return "E:" + evaporation + " " + super.toString();
+		return "E:" + (evaporationDelta - (VirtualClock.currentTime() - evaporationStart)) + " " + super.toString();
 	}
 
 }

@@ -33,13 +33,16 @@ public class Crossroads extends Connector<Truck, Crossroads, Road> implements Ti
 		return "cr" + getId();
 	}
 	
+	private boolean withVisuals = false;
+	
 	public Crossroads() {
 		super(ON_ROAD_CAPACITY, OFF_ROAD_CAPACITY);
 		EventBroker.getEventBroker().notifyAll(new CrossRoadsCreatedEvent(this));
-//		createIndividualWindow();
+		createIndividualWindow();
 	}
 	
 	private void createIndividualWindow() {
+		if(!withVisuals) return;
 		JFrame jFrame = new JFrame("Crossroads: " + getId());
 		jFrame.setSize(250, 100);
 		jFrame.setLocation(850, 400);
@@ -155,23 +158,12 @@ public class Crossroads extends Connector<Truck, Crossroads, Road> implements Ti
 //		p.packageAdded();
 	}
 	
-	private void surrogateTick(){
-		List<Trajectory> list = new ArrayList<Trajectory>();
-		for (Trajectory trajectory : suggestedRoutes) {
-			if(((EvaporationTrajectory) trajectory).evaporate()) list.add(trajectory);
-//			if(trajectory.getPdpPackage().isPackagePicked()) list.add(trajectory);
-		}
-		for (Trajectory trajectory : list) {
-			suggestedRoutes.remove(trajectory);
-		}
-		updateVenster();
-	}
-
 	private void updateVenster() {
-//		bovensteText.setText("");
-//		for (Trajectory trajectory : suggestedRoutes) {
-//			bovensteText.append(trajectory + "\n");
-//		}
+		if(!withVisuals) return;
+		bovensteText.setText("");
+		for (Trajectory trajectory : suggestedRoutes) {
+			bovensteText.append(trajectory + "\n");
+		}
 	}
 
 	public void suggestRoute(Trajectory route) {
@@ -210,8 +202,15 @@ public class Crossroads extends Connector<Truck, Crossroads, Road> implements Ti
 
 	@Override
 	public void processTick(long timePassed) {
-		//evt niet elke keer
-		surrogateTick();
+		List<Trajectory> list = new ArrayList<Trajectory>();
+		for (Trajectory trajectory : suggestedRoutes) {
+			if(((EvaporationTrajectory) trajectory).evaporate()) list.add(trajectory);
+//			if(trajectory.getPdpPackage().isPackagePicked()) list.add(trajectory);
+		}
+		for (Trajectory trajectory : list) {
+			suggestedRoutes.remove(trajectory);
+		}
+		updateVenster();
 	}
 
 }
