@@ -91,11 +91,25 @@ public class PDPPackage extends Resource<PDPPackage> {
 	}
 
 	private boolean packagePicked = false;
+	private boolean packageAdded;
+	private boolean packageDelivered;
 	
 	public void packagePicked() {
 		nbPackagesHour++;
 		linkseText.append(VirtualClock.currentTime() - timeCreated + "\n");
 		packagePicked = true;
+	}
+	
+	public void packageAdded() {
+		packageAdded = true;
+	}
+	
+	public boolean isPackageAdded(){
+		return packageAdded;
+	}
+	
+	public void packageDelivered() {
+		packageDelivered = true;
 	}
 	
 	public boolean isPackagePicked(){
@@ -194,6 +208,10 @@ public class PDPPackage extends Resource<PDPPackage> {
 	protected Command<? extends PDPPackage> loadFailSafeCommand() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public long getRadius() {
+		throw new UnsupportedOperationException();
 	}
 
 }

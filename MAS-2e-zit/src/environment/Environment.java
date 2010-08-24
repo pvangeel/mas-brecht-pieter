@@ -83,15 +83,15 @@ public class Environment implements AgentEnvironment {
 		
 		for(PDPPackageDTO p: waitingPackages) {
 			long distance = p.getOrigin().getPosition().getDistanceTo(position);
-			//long radius = p.getRadius();
-//			if(distance < radius) {
-//				candidatePackages.add(p);
-//				candidatesMap.put(radius-distance, p);
-//			}
+			long radius = p.getRadius();
+			if(distance < radius) {
+				candidatePackages.add(p);
+				candidatesMap.put(radius-distance, p);
+			}
 		}
 		
-//		if(candidatePackages.size() > 0)
-//			return candidatePackages.getFirst().getOrigin();
+		if(candidatePackages.size() > 0)
+			return candidatePackages.getFirst().getOrigin();
 		if(candidatesMap.size() > 0)
 			return candidatesMap.firstEntry().getValue().getOrigin();
 		else

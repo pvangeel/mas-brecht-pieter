@@ -24,7 +24,9 @@ import framework.layer.physical.position.ConnectorPosition;
 public class Crossroads extends Connector<Truck, Crossroads, Road> implements TickListener {
 
 	private String flag;
+	
 	private PDPPackage pdpPackage;
+	
 	private JTextArea bovensteText;
 	private static final int ON_ROAD_CAPACITY = 2;
 	private static final int OFF_ROAD_CAPACITY = 1;
@@ -34,6 +36,7 @@ public class Crossroads extends Connector<Truck, Crossroads, Road> implements Ti
 	}
 	
 	private boolean withVisuals = false;
+	
 	
 	public Crossroads() {
 		super(ON_ROAD_CAPACITY, OFF_ROAD_CAPACITY);
@@ -148,14 +151,14 @@ public class Crossroads extends Connector<Truck, Crossroads, Road> implements Ti
 	public void receivePackage(PDPPackage p) {
 		Environment.getInstance().deliverPackage(p.getDTO());
 		EventBroker.getEventBroker().notifyAll(new PackageDeliveredEvent(p.getId(), getOnroadEntities().getFirst()));
-//		p.packageDelivered();
+		p.packageDelivered();
 	}
 
 	public void addPackage(PDPPackage p) {
 		this.pdpPackage = p;
 		Environment.getInstance().addPackage(p.getDTO());
 		EventBroker.getEventBroker().notifyAll(new PackageCreatedEvent(p, this.getPosition()));
-//		p.packageAdded();
+		p.packageAdded();
 	}
 	
 	private void updateVenster() {
@@ -212,5 +215,7 @@ public class Crossroads extends Connector<Truck, Crossroads, Road> implements Ti
 		}
 		updateVenster();
 	}
+
+	
 
 }
