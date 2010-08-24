@@ -21,7 +21,6 @@ import framework.utils.Utils;
  * @author marioct
  *
  */
-@Deprecated
 public class DelegateMASVehiclesInitializationDirector extends InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> {
 
 	private final int numberOfAgents;

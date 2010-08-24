@@ -1,10 +1,10 @@
 package configuration.directors;
 
-import configuration.DelayedTimePattern;
-import configuration.intructions.CreateDelegateMASDeliveryAgent;
 import layer.physical.entities.Crossroads;
 import layer.physical.entities.Road;
 import layer.physical.entities.Truck;
+import configuration.DelayedTimePattern;
+import configuration.intructions.CreateGradientFieldDeliveryAgent;
 import framework.core.VirtualClock;
 import framework.initialization.InitializationDirector;
 import framework.instructions.InstructionManager;
@@ -18,11 +18,11 @@ import framework.utils.Utils;
  * @author marioct
  *
  */
-public class DelegateMASAgentsInitializationDirector extends InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> {
+public class GradientAgentsInitializationDirector extends InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> {
 
 	private final int numberOfAgents;
 
-	public DelegateMASAgentsInitializationDirector(int numberOfAgents) {
+	public GradientAgentsInitializationDirector(int numberOfAgents) {
 		super(new DelayedTimePattern(11000));
 		this.numberOfAgents = numberOfAgents;
 	}
@@ -32,16 +32,15 @@ public class DelegateMASAgentsInitializationDirector extends InitializationDirec
 	 */
 	@Override
 	protected void createAndDeploy() {
-		InstructionManager<PhysicalConnectionStructure<Truck, Crossroads, Road>> instructionManager = getInstructionManager();
+InstructionManager<PhysicalConnectionStructure<Truck, Crossroads, Road>> instructionManager = getInstructionManager();
 		
 		long currentTime = VirtualClock.currentTime();
 		
 		for (int i = 0; i < numberOfAgents; i++) {
 			int delay = 0 * i;
-			instructionManager.addInstruction(new CreateDelegateMASDeliveryAgent(currentTime + Utils.minutesToMicroSeconds(delay), i));
+			instructionManager.addInstruction(new CreateGradientFieldDeliveryAgent(currentTime + Utils.minutesToMicroSeconds(delay), i));
 			instructionManager.addInstruction(new DeployAgentInstruction(currentTime + Utils.minutesToMicroSeconds(delay), i, i));
 		}
-
 	}
 
 }

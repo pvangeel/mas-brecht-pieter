@@ -30,7 +30,6 @@ import framework.utils.Utils;
  * @author marioct
  *
  */
-@Deprecated
 public class DelegateMASPDPPackagesDirector extends InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> {
 
 	private static final int PACKAGES_PER_HOUR = 1;
