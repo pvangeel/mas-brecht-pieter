@@ -93,7 +93,7 @@ public class GradientFieldPDPBuilder extends ExperimentBuilder<PhysicalConnectio
 
 	@Override
 	public long getSimulationTime() {
-		int simulationTimeInMinutes = 60 * 24 * 50; // 5 days
+		int simulationTimeInMinutes = 60 * 24 * 3; // 5 days
 		return Utils.minutesToMicroSeconds(simulationTimeInMinutes);
 	}
 

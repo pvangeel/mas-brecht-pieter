@@ -47,7 +47,7 @@ public class Crossroads extends Connector<Truck, Crossroads, Road> implements Ti
 	private void createIndividualWindow() {
 		if(!withVisuals) return;
 		JFrame jFrame = new JFrame("Crossroads: " + getId());
-		jFrame.setSize(250, 100);
+		jFrame.setSize(350, 100);
 		jFrame.setLocation(850, 400);
 		jFrame.setLayout(new GridLayout(1, 1));
 		bovensteText = new JTextArea();

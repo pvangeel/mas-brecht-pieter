@@ -1,5 +1,7 @@
 package configuration.directors;
 
+import java.util.Random;
+
 import configuration.DelayedTimePattern;
 import configuration.intructions.CreateTruck;
 import layer.physical.entities.Crossroads;
@@ -25,11 +27,13 @@ public class DelegateMASVehiclesInitializationDirector extends InitializationDir
 
 	private final int numberOfAgents;
 	private final int numberOfCrossroads;
+	private Random random;
 
 	public DelegateMASVehiclesInitializationDirector(int numberOfAgents, int widthOfGrid) {
 		super(new DelayedTimePattern(1000));
 		this.numberOfAgents = numberOfAgents;
 		this.numberOfCrossroads = widthOfGrid * widthOfGrid;
+		this.random = new Random(25121987);
 	}
 
 	/**
@@ -59,7 +63,7 @@ public class DelegateMASVehiclesInitializationDirector extends InitializationDir
 		
 		for (int i = 0; i < numberOfAgents; i++) {
 			int delay = 0 * i;
-			Crossroads cr = getInstructionManager().findSpecificObject(Crossroads.class, (int) (Math.random() * numberOfCrossroads));
+			Crossroads cr = getInstructionManager().findSpecificObject(Crossroads.class, (int) (random.nextDouble() * numberOfCrossroads));
 			getInstructionManager().addInstruction(new CreateTruck(currentTime + Utils.minutesToMicroSeconds(delay), i, Utils.fromKmHToMmMicroSec(1)));
 			getInstructionManager().addInstruction(new DeployConnectionEntityInstruction<Truck, Crossroads, Road>(currentTime + Utils.minutesToMicroSeconds(delay), i, cr.getPosition().getX(), cr.getPosition().getY(),  true));
 			getInstructionManager().addInstruction(new CreateCommunicationCapabilityInstruction(currentTime + Utils.minutesToMicroSeconds(delay), i, null));

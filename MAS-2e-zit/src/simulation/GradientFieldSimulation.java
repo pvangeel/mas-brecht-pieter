@@ -18,7 +18,7 @@ public class GradientFieldSimulation {
 	 */
 	public static void main(String[] args) {
 		
-		int numberOfLinesInGrid = 10;
+		int numberOfLinesInGrid = 7;
 		int numberOfAgents = 2;
 		
 		new SimpleGUI(numberOfLinesInGrid);
