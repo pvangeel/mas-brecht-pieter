@@ -52,7 +52,7 @@ public class DelegateMASPDPPackagesDirector extends InitializationDirector<Physi
 	@Override
 	protected void createAndDeploy() {
 		long currentTime = VirtualClock.currentTime();
-		if(lastTime != 0 && currentTime - lastTime < Utils.minutesToMicroSeconds(60))
+		if(lastTime != 0 && currentTime - lastTime < Utils.minutesToMicroSeconds(45))
 			return;
 		lastTime = currentTime;
 		if(numberOfPackages >= TOTAL_NUMBER_OF_PACKAGES) {
