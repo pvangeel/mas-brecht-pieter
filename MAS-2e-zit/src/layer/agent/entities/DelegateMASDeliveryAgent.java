@@ -110,7 +110,7 @@ public class DelegateMASDeliveryAgent extends Agent {
 		}
 		
 		while(!suggestedRoutes.isEmpty()){
-			if(suggestedRoutes.first().getPdpPackage().reserve(this, suggestedRoutes.first())){
+			if(suggestedRoutes.first().getPdpPackage().tryToReserve(this, suggestedRoutes.first())){
 				currentTrajectory = new Trajectory(suggestedRoutes.first());
 				return true;
 			}

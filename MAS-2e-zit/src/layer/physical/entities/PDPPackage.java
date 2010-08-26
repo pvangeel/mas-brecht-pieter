@@ -33,7 +33,7 @@ public class PDPPackage extends Resource<PDPPackage> {
 	
 	private long packagePriority = 0;
 	private long lastPriorityIncreased = VirtualClock.currentTime();
-	private long tresholdToIncreasePriority = Utils.minutesToMicroSeconds(60 * 12);
+	private long tresholdToIncreasePriority = Utils.minutesToMicroSeconds(60 * 24);
 	
 	private long lastAntsSent = 0; //VirtualClock.currentTime();
 	private long tresholdToSendNextAnts = Utils.minutesToMicroSeconds(1);
@@ -147,7 +147,7 @@ public class PDPPackage extends Resource<PDPPackage> {
 
 	
 	
-	public boolean reserve(DelegateMASDeliveryAgent truckAgent, Trajectory route){
+	public boolean tryToReserve(DelegateMASDeliveryAgent truckAgent, Trajectory route){
 		if(isPackagePicked()) return false;
 		if(currentTruck == null){
 			currentTruck = truckAgent;
@@ -164,7 +164,6 @@ public class PDPPackage extends Resource<PDPPackage> {
 	
 	
 	private boolean better(Trajectory newRoute) {
-		Trajectory routeFromCurrentTruck = currentTruck.getCurrentRoute();
 		/*
 		 * Als de truck die onderweg is naar dit pakje ondertussen een beter pakje heeft gevonden maar nog steeds
 		 * in deze package geregistreerd staat als currentTruck (confirmTruck is nog niet gebeurd, gebeurt bij volgende tick)

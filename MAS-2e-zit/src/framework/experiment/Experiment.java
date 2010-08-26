@@ -60,6 +60,7 @@ public class Experiment<S extends PhysicalStructure<?>> implements
 
 	@Override
 	public void onSimulationStop() {
+		SimulationCore.getSimulationCore().pauseSimulation();
 		ProgramParameters.reset();
 		runExperiment();
 	}

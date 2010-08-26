@@ -43,8 +43,7 @@ public class DelegateMASPDPPackagesDirector extends InitializationDirector<Physi
 	public DelegateMASPDPPackagesDirector(int width) {
 		super(new IntervalTimePattern(Utils.minutesToMicroSeconds(10)));
 		this.maxIdOfNode = width * width;
-		random = new Random();
-//		random = new Random();
+		random = new Random(PACKAGE_GENERATOR_SEED);
 	}
 
 	/**
@@ -65,15 +64,15 @@ public class DelegateMASPDPPackagesDirector extends InitializationDirector<Physi
 //			int id1 = nodesExternalIds[(int)Math.ceil(random.nextDouble() * (nodesExternalIds.length - 1))];
 //			int id2 = nodesExternalIds[(int)Math.ceil(random.nextDouble() * (nodesExternalIds.length - 1))];
 			
-			int id1 = (int) (Math.random() * maxIdOfNode);
+			int id1 = (int) (random.nextDouble() * maxIdOfNode);
 			Crossroads cr1 = getInstructionManager().findSpecificObject(Crossroads.class, id1);
 			while(cr1.hasPackage()){
-				id1 = (int) (Math.random() * maxIdOfNode);
+				id1 = (int) (random.nextDouble() * maxIdOfNode);
 				cr1 = getInstructionManager().findSpecificObject(Crossroads.class, id1);
 			}
-			int id2 = (int) (Math.random() * maxIdOfNode);
+			int id2 = (int) (random.nextDouble() * maxIdOfNode);
 			while(id1 == id2){
-				id2 = (int) (Math.random() * maxIdOfNode);
+				id2 = (int) (random.nextDouble() * maxIdOfNode);
 			}
 			
 			
