@@ -35,7 +35,7 @@ public class Crossroads extends Connector<Truck, Crossroads, Road> implements Ti
 		return "cr" + getId();
 	}
 	
-	private boolean withVisuals = false;
+	public static boolean withVisuals = false;
 	
 	
 	public Crossroads() {

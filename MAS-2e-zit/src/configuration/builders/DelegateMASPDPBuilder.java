@@ -28,17 +28,12 @@ public class DelegateMASPDPBuilder extends ExperimentBuilder<PhysicalConnectionS
 	private boolean regularGrid = false;
 	private final int numberOfAgents;
 	private PhysicalLayer<PhysicalConnectionStructure<Truck, Crossroads, Road>> physicalLayer;
+	private final int packageInjectionRate;
 
-	public DelegateMASPDPBuilder(File osmMapFile, int numberOfAgents) {
-		this.numberOfAgents = numberOfAgents;
-		if(osmMapFile == null)
-			throw new IllegalArgumentException("Should be a file.");
-		this.osmMapFile = osmMapFile;
-	}
-	
-	public DelegateMASPDPBuilder(int width, int numberOfAgents) {
+	public DelegateMASPDPBuilder(int width, int numberOfAgents, int packageInjectionRate) {
 		this.width = width;
 		this.numberOfAgents = numberOfAgents;
+		this.packageInjectionRate = packageInjectionRate;
 		regularGrid = true;
 	}
 	
@@ -67,7 +62,7 @@ public class DelegateMASPDPBuilder extends ExperimentBuilder<PhysicalConnectionS
 		
 		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> vehicles = new DelegateMASVehiclesInitializationDirector(numberOfAgents, width);
 		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> agents = new DelegateMASAgentsInitializationDirector(numberOfAgents);
-		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> packages = new DelegateMASPDPPackagesDirector(width);
+		InitializationDirector<PhysicalConnectionStructure<Truck, Crossroads, Road>> packages = new DelegateMASPDPPackagesDirector(width, packageInjectionRate);
 		
 		
 		

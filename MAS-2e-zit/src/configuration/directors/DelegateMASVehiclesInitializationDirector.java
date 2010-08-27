@@ -33,7 +33,7 @@ public class DelegateMASVehiclesInitializationDirector extends InitializationDir
 		super(new DelayedTimePattern(1000));
 		this.numberOfAgents = numberOfAgents;
 		this.numberOfCrossroads = widthOfGrid * widthOfGrid;
-		this.random = new Random(25121987);
+		this.random = new Random();
 	}
 
 	/**

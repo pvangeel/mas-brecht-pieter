@@ -55,8 +55,10 @@ public class PDPPackage extends Resource<PDPPackage> {
 	private static boolean windowCreated = false;
 	private static JTextArea linkseText;
 	private static JTextArea rechtseText;
+	public static boolean createWindow = false;
 	
 	private static void createWindow(){
+		if(!createWindow) return;
 		if(windowCreated) return;
 		JFrame jFrame = new JFrame("Packages");
 		jFrame.setSize(400, 500);
@@ -96,7 +98,7 @@ public class PDPPackage extends Resource<PDPPackage> {
 	
 	public void packagePicked() {
 		nbPackagesHour++;
-		linkseText.append(VirtualClock.currentTime() - timeCreated + "\n");
+		if(createWindow) linkseText.append((VirtualClock.currentTime() - timeCreated) / 1000 / 1000 / 60 + "\n");
 		packagePicked = true;
 	}
 	

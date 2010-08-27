@@ -39,11 +39,13 @@ public class DelegateMASPDPPackagesDirector extends InitializationDirector<Physi
 	private int numberOfPackages = 0;
 	private long lastTime = 0;
 	private final int maxIdOfNode;
+	private final int packageInjectionRate;
 	
-	public DelegateMASPDPPackagesDirector(int width) {
+	public DelegateMASPDPPackagesDirector(int width, int packageInjectionRate) {
 		super(new IntervalTimePattern(Utils.minutesToMicroSeconds(10)));
+		this.packageInjectionRate = packageInjectionRate;
 		this.maxIdOfNode = width * width;
-		random = new Random(PACKAGE_GENERATOR_SEED);
+		random = new Random();
 	}
 
 	/**
@@ -52,7 +54,7 @@ public class DelegateMASPDPPackagesDirector extends InitializationDirector<Physi
 	@Override
 	protected void createAndDeploy() {
 		long currentTime = VirtualClock.currentTime();
-		if(lastTime != 0 && currentTime - lastTime < Utils.minutesToMicroSeconds(45))
+		if(lastTime != 0 && currentTime - lastTime < Utils.minutesToMicroSeconds(packageInjectionRate))
 			return;
 		lastTime = currentTime;
 		if(numberOfPackages >= TOTAL_NUMBER_OF_PACKAGES) {

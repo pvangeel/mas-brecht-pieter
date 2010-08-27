@@ -45,7 +45,7 @@ public class DelegateMASDeliveryAgent extends Agent {
 	private AStarRouter router = new AStarRouter.DistanceBasedAStar();
 	
 	
-	private boolean withVisuals = false;
+	public static boolean withVisuals = false;
 
 	public DelegateMASDeliveryAgent() {
 		if(!withVisuals) return;
