@@ -1,36 +1,19 @@
 package simulation;
 
-import java.io.File;
 
 import configuration.builders.DelegateMASPDPBuilder;
 import layer.physical.entities.Crossroads;
 import layer.physical.entities.Road;
 import layer.physical.entities.Truck;
 import framework.experiment.Experiment;
-import framework.experiment.ExperimentBuilder;
 import framework.layer.physical.PhysicalConnectionStructure;
 import gui.SimpleGUI;
 
 public class DelegateMasSimulation {
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		
-		int numberOfLinesInGrid = 6;
-		int numberOfAgents = 3;
-		
-		
+	public DelegateMasSimulation(int numberOfAgents, int numberOfLinesInGrid, int packageInjectionRate) {
 		new SimpleGUI(numberOfLinesInGrid);
-//		new MyFirstEventListener(); //creates a simple event listener
-		//new PackagesCreatedEventListener();
-		//new PackagesDeliveredEventListener();
-		//new Experiment<PhysicalConnectionStructure<Truck, Crossroads, Road>>(4, new GradientFieldPDPBuilder(new File("leuven.osm.xml")));
-		
-//		new Experiment<PhysicalConnectionStructure<Truck, Crossroads, Road>>(1, new DelegateMASPDPBuilder(new File("leuven.osm.xml")));
-		new Experiment<PhysicalConnectionStructure<Truck, Crossroads, Road>>(1, new DelegateMASPDPBuilder(numberOfLinesInGrid,numberOfAgents));
-		
+		new Experiment<PhysicalConnectionStructure<Truck, Crossroads, Road>>(1, new DelegateMASPDPBuilder(numberOfLinesInGrid,numberOfAgents, packageInjectionRate));
 	}
 
 }

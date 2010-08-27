@@ -18,14 +18,14 @@ public class GradientFieldSimulation {
 	 */
 	public static void main(String[] args) {
 		
-		int numberOfLinesInGrid = 7;
-		int numberOfAgents = 2;
+		int numberOfLinesInGrid = 14;
+		int numberOfAgents = 3;
 		
 		new SimpleGUI(numberOfLinesInGrid);
 //		new MyFirstEventListener(); //creates a simple event listener
 //		new PackagesCreatedEventListener();
 //		new PackagesDeliveredEventListener();
-		new Experiment<PhysicalConnectionStructure<Truck, Crossroads, Road>>(4, new GradientFieldPDPBuilder(numberOfLinesInGrid,numberOfAgents));
+		new Experiment<PhysicalConnectionStructure<Truck, Crossroads, Road>>(1, new GradientFieldPDPBuilder(numberOfLinesInGrid,numberOfAgents));
 	}
 
 }
