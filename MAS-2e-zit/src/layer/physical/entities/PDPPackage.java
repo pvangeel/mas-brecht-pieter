@@ -33,7 +33,7 @@ public class PDPPackage extends Resource<PDPPackage> {
 	
 	private long packagePriority = 0;
 	private long lastPriorityIncreased = VirtualClock.currentTime();
-	private long tresholdToIncreasePriority = Utils.minutesToMicroSeconds(60 * 24);
+	private long tresholdToIncreasePriority = Utils.minutesToMicroSeconds(60 * 24 * 50);
 	
 	private long lastAntsSent = 0; //VirtualClock.currentTime();
 	private long tresholdToSendNextAnts = Utils.minutesToMicroSeconds(1);
